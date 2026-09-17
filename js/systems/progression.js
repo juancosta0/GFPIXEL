@@ -1,6 +1,7 @@
 import { CONFIG } from '../data/config.js';
 import { EquipmentSystem } from './equipment.js';
 import { UISystem } from '../ui/ui.js';
+import { SaveSystem } from './save.js';
 
 export const REGIONS = Object.freeze({
   cidade: { recommendedLevel: 1, difficulty: 'safe', rewards: [] },
@@ -24,6 +25,7 @@ export class ProgressionSystem {
       player.hp = player.maxHp;
       player.mp = player.maxMp;
       UISystem.logMsg(`LEVEL UP! Nível ${player.lv}!`, 'sys');
+      SaveSystem.saveGame();
     }
     UISystem.updateHUD();
   }

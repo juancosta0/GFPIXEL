@@ -19,6 +19,13 @@ export class InputManager {
       if (key === 'i') UISystem.toggleWindow('playerWindows');
     });
     window.addEventListener('keyup', event => { this.keys[event.key.toLowerCase()] = false; });
+    window.addEventListener('blur', () => { this.keys = {}; this.pressedThisFrame = {}; });
+    window.addEventListener('keydown', event => {
+      if (event.key.toLowerCase() === 'p') {
+        GameState.paused = !GameState.paused;
+        UISystem.logMsg(GameState.paused ? 'Jogo pausado.' : 'Jogo retomado.', 'sys');
+      }
+    });
   }
   static isPressed(key) { return Boolean(this.keys[key]); }
   static isJustPressed(key) { return Boolean(this.pressedThisFrame[key]); }

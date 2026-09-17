@@ -4,8 +4,14 @@ export const SCENES_DB = {
   cidade: {
     id: 'cidade', name: 'Refúgio de Ilya', type: 'city', combatAllowed: false, theme: 'town', tileKey: 'tileTown', width: 1680, height: 1200,
     portals: [{ x: 1615, y: 600, r: 32, color: '#78f3e3', dest: 'pradariaLunar', spawnX: 130, spawnY: 850, text: 'Pradaria Lunar' }, { x: 300, y: 310, r: 32, color: '#6bcf8b', dest: 'bosqueRaiz', spawnX: 220, spawnY: 930, text: 'Bosque da Raiz' }, { x: 1320, y: 310, r: 32, color: '#a879df', dest: 'criptaAqua', spawnX: 160, spawnY: 860, text: 'Cripta Aqua' }],
-    spawns: [], npcs: [{ id: 'npc_blacksmith', name: 'Mestre Ferreiro', x: 810, y: 560, r: 20, type: 'crafting', color: '#d18b52', text: 'E - Forjar' }, { id: 'npc_guide', name: 'Guia de Ilya', x: 690, y: 630, r: 18, type: 'dialogue', color: '#7696d6', text: 'E - Falar' }],
+    spawns: [], npcs: [{ id: 'npc_blacksmith', name: 'Mestre Ferreiro', x: 810, y: 560, r: 20, type: 'crafting', color: '#d18b52', text: 'E - Forjar' }, { id: 'npc_guide', name: 'Guia de Ilya', x: 690, y: 630, r: 18, type: 'dialogue', color: '#7696d6', text: 'E - Falar' }, { id: 'npc_merchant', name: 'Mercadora Nara', x: 930, y: 560, r: 18, type: 'shop', color: '#d9a65a', text: 'E - Comprar' }],
     objects: [{ type: 'fountain', x: 810, y: 760 }, { type: 'chest', x: 610, y: 700 }, { type: 'chest', x: 1030, y: 700 }, { type: 'banner', x: 500, y: 520 }, { type: 'banner', x: 1120, y: 520 }, ...ring('lamp', 810, 760, 6, 180)]
+  },
+  jardimNebuloso: {
+    id: 'jardimNebuloso', name: 'Jardim Nebuloso', type: 'field', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 1900, height: 1450,
+    portals: [{ x: 70, y: 700, r: 32, color: '#78f3e3', dest: 'cidade', spawnX: 1450, spawnY: 850, text: 'Refúgio de Ilya' }],
+    spawns: [{ enemyId: 'raposa_cristal', count: 9, area: { x1: 320, y1: 260, x2: 1600, y2: 1150 } }], npcs: [],
+    objects: [{ type: 'crystal', x: 480, y: 410 }, { type: 'chest', x: 1400, y: 900 }, ...ring('flower', 980, 720, 10, 240)]
   },
   pradariaLunar: {
     id: 'pradariaLunar', name: 'Pradaria da Lua Rubra', type: 'field', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 2200, height: 1800,
@@ -25,7 +31,7 @@ export const SCENES_DB = {
     spawns: [{ enemyId: 'espectro_aqua', count: 13, area: { x1: 260, y1: 250, x2: 1800, y2: 1350 } }, { enemyId: 'sentinela_osso', count: 8, area: { x1: 500, y1: 380, x2: 1700, y2: 1350 } }], npcs: [],
     objects: [{ type: 'altar', x: 1080, y: 740 }, { type: 'chest', x: 720, y: 1100 }, { type: 'chest', x: 1420, y: 1080 }, { type: 'ruin', x: 480, y: 420 }, { type: 'ruin', x: 1660, y: 430 }, ...ring('torch', 1080, 740, 8, 270)]
   },
-  covilLunar: { id: 'covilLunar', name: 'Covil da Rainha Lunar', type: 'bossroom', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 860, height: 800, portals: [{ x: 430, y: 750, r: 32, color: '#78f3e3', dest: 'pradariaLunar', spawnX: 1850, spawnY: 310, text: 'Sair do Covil' }], spawns: [{ enemyId: 'rainha_gelatina', count: 1, area: { x1: 430, y1: 330, x2: 430, y2: 330 } }], npcs: [], objects: [{ type: 'crystal', x: 210, y: 250 }, { type: 'crystal', x: 650, y: 250 }, ...ring('flower', 430, 350, 9, 230)] },
+  covilLunar: { id: 'covilLunar', name: 'Covil da Rainha Lunar', type: 'bossroom', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 860, height: 800, portals: [{ x: 430, y: 750, r: 32, color: '#78f3e3', dest: 'pradariaLunar', spawnX: 1850, spawnY: 310, text: 'Sair do Covil' }], spawns: [{ enemyId: 'rainha_gelatina', count: 1, area: { x1: 430, y1: 330, x2: 430, y2: 330 } }], npcs: [], objects: [{ type: 'crystal', x: 210, y: 250 }, { type: 'crystal', x: 650, y: 250 }, { type: 'chest', x: 430, y: 520 }, ...ring('flower', 430, 350, 9, 230)] },
   santuarioRaiz: { id: 'santuarioRaiz', name: 'Santuário do Carvalho', type: 'bossroom', combatAllowed: true, theme: 'forest', tileKey: 'tileForest', width: 860, height: 800, portals: [{ x: 430, y: 750, r: 32, color: '#6bcf8b', dest: 'bosqueRaiz', spawnX: 1850, spawnY: 350, text: 'Sair do Santuário' }], spawns: [{ enemyId: 'guardiao_raiz', count: 1, area: { x1: 430, y1: 330, x2: 430, y2: 330 } }], npcs: [], objects: [{ type: 'tree', x: 215, y: 280 }, { type: 'tree', x: 650, y: 280 }, { type: 'ruin', x: 430, y: 210 }, ...ring('mushroom', 430, 370, 10, 220)] },
   tronoAqua: { id: 'tronoAqua', name: 'Trono das Marés Mortas', type: 'bossroom', combatAllowed: true, theme: 'crypt', tileKey: 'tileCrypt', width: 860, height: 800, portals: [{ x: 430, y: 750, r: 32, color: '#78f3e3', dest: 'criptaAqua', spawnX: 1760, spawnY: 340, text: 'Sair da Cripta' }], spawns: [{ enemyId: 'lich_cripta', count: 1, area: { x1: 430, y1: 330, x2: 430, y2: 330 } }], npcs: [], objects: [{ type: 'altar', x: 430, y: 220 }, { type: 'torch', x: 200, y: 330 }, { type: 'torch', x: 660, y: 330 }, { type: 'chest', x: 290, y: 520 }, { type: 'chest', x: 570, y: 520 }] }
 };

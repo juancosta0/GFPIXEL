@@ -14,6 +14,7 @@ export class UISystem {
     }
     this.updateHUD();
     this.updateUI();
+    this.updateSpritePanel();
   }
 
   static updateHUD() {
@@ -25,6 +26,15 @@ export class UISystem {
     document.getElementById('pLv').textContent = p.lv;
     document.getElementById('pGold').textContent = p.gold;
     document.getElementById('pAtk').textContent = p.atk;
+    const boss = GameState.enemies.find(enemy => enemy.alive && enemy.base.type === 'boss');
+    const bossBar = document.getElementById('bossBar');
+    if (bossBar) {
+      bossBar.hidden = !boss;
+      if (boss) {
+        document.getElementById('bossName').textContent = `${boss.base.name} · Fase ${boss.bossPhase}`;
+        document.getElementById('bossFill').style.width = `${Math.max(0, boss.hp / boss.base.maxHp * 100)}%`;
+      }
+    }
     p.skillCds.forEach((cooldown, index) => {
       const slot = document.querySelector(`[data-skill="${index}"]`);
       if (!slot) return;
@@ -44,7 +54,7 @@ export class UISystem {
     const hint = document.getElementById('interactionHint');
     const target = p.interactionTarget;
     hint.classList.toggle('visible', Boolean(target));
-    if (target) hint.querySelector('span').textContent = target.text?.replace('E - ', '') || `Interagir com ${target.name}`;
+    if (target) hint.querySelector('span').textContent = target.text?.replace('E - ', '') || (target.type === 'chest' ? 'Abrir baú' : `Interagir com ${target.name}`);
   }
 
   static updateUI() {
@@ -80,6 +90,19 @@ export class UISystem {
         slot.innerHTML = `<span class="equip-label">${label}</span><br>Vazio`;
       }
     });
+  }
+
+  static updateSpritePanel() {
+    const pet = GameState.pet;
+    if (!pet) return;
+    const set = (id, value) => { const element = document.getElementById(id); if (element) element.textContent = value; };
+    set('spriteName', pet.name);
+    set('spriteLevel', `Lv. ${pet.level}`);
+    set('spriteXp', `${pet.xp}/${pet.xpNext}`);
+    set('spriteEnergy', `${Math.round(pet.energy)}%`);
+    set('spriteTask', pet.state === 'gathering' ? pet.taskName : pet.state === 'resting' ? 'Descansando' : 'Seguindo');
+    set('spriteTime', pet.state === 'gathering' ? `${Math.max(0, pet.gatherTimer).toFixed(1)}s` : '-');
+    set('spriteReward', pet.taskReward || '-');
   }
 
   static toggleWindow(id) {

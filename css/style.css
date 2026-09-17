@@ -104,6 +104,11 @@ kbd { padding:2px 5px; color:#20172f; background:#f2c14e; border:2px solid #fff0
 .equip-slot { width:60px; height:60px; font-size:10px; }
 .equip-label { font-size:9px; color:#71717a; margin-bottom:2px; }
 .item-stats { font-size:8px; color:#2ecc71; }
+.quest-entry { border-bottom:1px solid #3b3450; padding:5px 0; font-size:11px; }
+.quest-entry span { color:#c9c1d9; }
+#bossBar { position:absolute; top:58px; left:50%; transform:translateX(-50%); width:min(360px, 60vw); text-align:center; color:#f7d4a0; font-size:12px; }
+#bossBar .bar { width:100%; height:8px; background:#241b27; border:1px solid #ef806c; }
+#bossFill { background:#d95a65; height:100%; transition:width .12s linear; }
 
 .rarity-common { color: #ffffff; }
 .rarity-uncommon { color: #70d6a2; font-weight: bold; }

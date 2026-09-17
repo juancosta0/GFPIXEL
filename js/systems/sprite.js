@@ -21,26 +21,48 @@ export class SpriteSystem {
   }
 
   static startGathering(type, duration, name) {
-    if (GameState.pet.state !== 'follow') return;
-    Object.assign(GameState.pet, { state: 'gather', gatherTimer: duration / 60, taskName: name, gatherType: type });
+    const pet = GameState.pet;
+    if (!pet || pet.state !== 'following' || pet.energy < 15) {
+      UISystem.logMsg('Sprite precisa estar seguindo e ter energia.', 'dmg');
+      return;
+    }
+    const adjustedDuration = Math.max(2, duration / 60 * (1 - Math.min(.35, (pet.level - 1) * .05)));
+    Object.assign(pet, { state: 'gathering', gatherTimer: adjustedDuration, taskDuration: adjustedDuration, taskName: name, gatherType: type, taskReward: `1-${1 + pet.level} ${name}`, energy: pet.energy - 15, mood: 'focado' });
     document.querySelectorAll('[id^="btnGather"]').forEach(button => { button.disabled = true; });
-    UISystem.logMsg(`Sprite coletando ${name}...`, 'sys');
+    UISystem.logMsg(`${pet.name} começou a coletar ${name}.`, 'sys');
+    UISystem.updateSpritePanel();
   }
 
   static update(dt) {
     const pet = GameState.pet;
     const player = GameState.player;
-    if (!pet || pet.state !== 'gather') return;
+    if (!pet || pet.state !== 'gathering') return;
     const blend = 1 - Math.exp(-5 * dt);
     pet.x += (player.x + 80 - pet.x) * blend;
     pet.y += (player.y - 60 - pet.y) * blend;
     pet.gatherTimer -= dt;
     if (pet.gatherTimer > 0) return;
-    pet.state = 'follow';
-    const amount = Math.floor(Math.random() * 3) + 1;
+    pet.state = 'following';
+    const amount = Math.floor(Math.random() * (2 + pet.level)) + 1;
     player.materials[pet.gatherType] += amount;
-    UISystem.logMsg(`Sprite obteve ${amount}x ${pet.taskName}!`, 'gold');
+    this.addExperience(pet, 10);
+    pet.mood = 'feliz';
+    pet.inventory.push({ type: pet.gatherType, quantity: amount });
+    UISystem.logMsg(`${pet.name} encontrou ${amount}x ${pet.taskName} e voltou!`, 'gold');
     document.querySelectorAll('[id^="btnGather"]').forEach(button => { button.disabled = false; });
     UISystem.updateHUD();
+    UISystem.updateSpritePanel();
+  }
+
+  static addExperience(pet, amount) {
+    pet.xp += amount;
+    while (pet.xp >= pet.xpNext) {
+      pet.xp -= pet.xpNext;
+      pet.level++;
+      pet.xpNext = Math.round(pet.xpNext * 1.35);
+      if (pet.level === 2) pet.abilities.push('coleta eficiente');
+      if (pet.level === 3) pet.abilities.push('atividade avançada');
+      UISystem.logMsg(`${pet.name} subiu para o nível ${pet.level}!`, 'gold');
+    }
   }
 }

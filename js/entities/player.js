@@ -6,6 +6,11 @@ import { UISystem } from '../ui/ui.js';
 import { CONFIG } from '../data/config.js';
 import { SpriteSystem } from '../systems/sprite.js';
 import { ProgressionSystem } from '../systems/progression.js';
+import { NPCS_DB } from '../data/npcs.js';
+import { DialogueSystem } from '../systems/dialogue.js';
+import { QuestSystem } from '../systems/quests.js';
+import { ChestSystem } from '../systems/chests.js';
+import { ShopSystem } from '../systems/shop.js';
 
 export class Player extends Entity {
   constructor(x, y) {
@@ -96,6 +101,7 @@ export class Player extends Entity {
     };
     
     checkList(GameState.currentScene.npcs);
+    checkList((GameState.currentScene.objects || []).filter(object => object.type === 'chest' && !object.opened));
     this.interactionTarget = closest;
     
     if (this.interactionTarget && InputManager.isJustPressed('e')) {
@@ -104,8 +110,17 @@ export class Player extends Entity {
   }
 
   interact(target) {
-    UISystem.logMsg(`Interagiu com ${target.name}`, 'sys');
-    // Implementar lógicas específicas por tipo depois
+    if (target.type === 'chest') return ChestSystem.open(target);
+    const npc = NPCS_DB[target.id] || target;
+    if (npc.function === 'shop') return ShopSystem.buy(npc.shop?.[0] || 'pocao_luz');
+    const action = DialogueSystem.open(npc, npc.dialogue, 0);
+    if (action === 'acceptQuest') {
+      const questId = npc.quests?.find(id => GameState.quests[id]?.status === 'available');
+      if (questId) QuestSystem.accept(questId);
+      const completed = npc.quests?.find(id => GameState.quests[id]?.status === 'completed');
+      if (completed) QuestSystem.claim(completed);
+    }
+    QuestSystem.onEvent('talk', npc.id);
   }
 
   update(dt) {

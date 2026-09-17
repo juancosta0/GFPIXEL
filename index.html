@@ -25,9 +25,15 @@
       <span style="color:#f1c40f">💰 <span id="pGold">0</span> | Atk: <span id="pAtk">10</span></span>
     </div>
   </div>
+  <div id="bossBar" hidden><strong id="bossName"></strong><div class="bar"><div id="bossFill"></div></div></div>
 
   <div id="spritePanel">
     <h3>Mesa do Sprite</h3>
+    <div class="sprite-status"><strong id="spriteName">Lumi</strong> <span id="spriteLevel">Lv. 1</span></div>
+    <div>XP <span id="spriteXp">0/40</span> · Energia <span id="spriteEnergy">100%</span></div>
+    <div>Tarefa: <span id="spriteTask">Seguindo</span></div>
+    <div>Tempo: <span id="spriteTime">-</span></div>
+    <div>Recompensa: <span id="spriteReward">-</span></div>
     <div class="material-counter"><span>⛏️ Minérios:</span> <strong id="mMinerals" style="color:#3498db">0</strong></div>
     <div class="material-counter"><span>🪵 Madeira:</span> <strong id="mWood" style="color:#d35400">0</strong></div>
     <div class="material-counter"><span>🌿 Ervas:</span> <strong id="mHerbs" style="color:#2ecc71">0</strong></div>
@@ -40,6 +46,7 @@
   </div>
 
   <div id="playerWindows">
+    <div class="ui-panel" id="questPanel"><h3>📜 Quest Log</h3><div id="questLog">Nenhuma missão ativa.</div></div>
     <div class="ui-panel">
       <h3>🛡️ Equipamentos</h3>
       <div id="equipContainer">

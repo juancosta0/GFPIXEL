@@ -5,6 +5,8 @@ import { Enemy } from '../entities/enemy.js';
 import { Camera } from './camera.js';
 import { IMAGES } from '../data/assets.js';
 import { SpriteSystem } from '../systems/sprite.js';
+import { QuestSystem } from '../systems/quests.js';
+import { SaveSystem } from '../systems/save.js';
 
 export class SceneManager {
   static loadScene(sceneId, spawnX, spawnY) {
@@ -14,6 +16,10 @@ export class SceneManager {
     document.getElementById('fadeOverlay').style.opacity = 1;
     setTimeout(() => {
       GameState.currentScene = SCENES_DB[sceneId];
+      if (sceneId === 'cidade' && !GameState.currentScene.portals.some(portal => portal.dest === 'jardimNebuloso')) GameState.currentScene.portals.push({ x: 1500, y: 900, r: 32, color: '#d0ad68', dest: 'jardimNebuloso', spawnX: 100, spawnY: 700, text: 'Jardim Nebuloso' });
+      QuestSystem.onEvent('visit', sceneId);
+      SaveSystem.saveGame();
+      for (const object of GameState.currentScene.objects || []) if (object.type === 'chest' && object.opened === undefined) object.opened = false;
       GameState.player.x = spawnX;
       GameState.player.y = spawnY;
       GameState.player.updateState('idle');
@@ -145,6 +151,12 @@ export class SceneManager {
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(npc.name, sx, sy - npc.r - 4);
+      const questId = npc.quests?.find(id => GameState.quests?.[id]?.status === 'available') || npc.quests?.find(id => GameState.quests?.[id]?.status === 'completed');
+      if (questId) {
+        ctx.fillStyle = GameState.quests[questId].status === 'completed' ? '#d9f07a' : '#f1d17a';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText(GameState.quests[questId].status === 'completed' ? '?' : '!', sx, sy - npc.r - 22);
+      }
     }
   }
 

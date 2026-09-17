@@ -3,6 +3,7 @@ import { DropItem } from '../entities/dropItem.js';
 import { CONFIG } from '../data/config.js';
 import { UISystem } from '../ui/ui.js';
 import { InventorySystem } from './inventory.js';
+import { QuestSystem } from './quests.js';
 
 export class LootSystem {
   static roll(enemy) {
@@ -36,6 +37,7 @@ export class LootSystem {
       if (Math.hypot(GameState.player.x - drop.x, GameState.player.y - drop.y) < GameState.player.r + drop.r) {
         if (InventorySystem.addItem(drop.item)) {
           UISystem.logMsg(`🎒 Item coletado: ${drop.item.name}`, 'sys');
+          QuestSystem.onEvent('collect', drop.item.id || drop.item.name, drop.item.quantity || 1);
           UISystem.updateUI();
           GameState.drops.splice(i, 1);
         }

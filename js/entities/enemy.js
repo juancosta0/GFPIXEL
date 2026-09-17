@@ -9,6 +9,8 @@ import { CONFIG } from '../data/config.js';
 import { CombatSystem } from '../systems/combat.js';
 import { EnemyAISystem, AI_STATES } from '../systems/ai.js';
 import { ProgressionSystem } from '../systems/progression.js';
+import { QuestSystem } from '../systems/quests.js';
+import { SaveSystem } from '../systems/save.js';
 
 let nextEnemyId = 1;
 
@@ -18,6 +20,7 @@ export class Enemy extends Entity {
     super(x, y, base.r);
     this.id = `enemy-${nextEnemyId++}`;
     this.base = base;
+    this.enemyDbId = dbId;
     this.hp = base.maxHp;
     this.state = 'idle';
     this.atkCd = 0;
@@ -35,6 +38,11 @@ export class Enemy extends Entity {
     this.aggroDuration = base.aggroDuration || 8;
     this.behaviorType = base.behaviorType || (base.type === 'boss' ? 'boss' : 'aggressive');
     this.wasAttacked = false;
+    this.bossPhase = 1;
+    this.specialCooldown = 4;
+    this.specialPending = false;
+    this.telegraphTimer = 0;
+    this.specialRadius = 72;
     this.patrolAngle = Math.random() * Math.PI * 2;
   }
 
@@ -46,12 +54,14 @@ export class Enemy extends Entity {
     const g = Math.floor(Math.random() * (this.base.gold[1] - this.base.gold[0])) + this.base.gold[0];
     GameState.player.gold += g;
     ProgressionSystem.addExperience(GameState.player, this.base.exp);
+    QuestSystem.onEvent('kill', this.enemyDbId);
     
     UISystem.logMsg(`Derrotou ${this.base.name}! +${g} Ouro`, 'gold');
     
     for (const item of LootSystem.roll(this)) LootSystem.spawnDrop(this.x, this.y, item);
     if (this.base.type === 'boss') {
       UISystem.logMsg('✨ CHEFE DERROTADO!', 'gold');
+      SaveSystem.saveGame();
     }
   }
 
@@ -80,6 +90,7 @@ export class Enemy extends Entity {
     
     const p = GameState.player;
     const d = Math.hypot(p.x - this.x, p.y - this.y);
+    this.updateBossSpecial(dt, p, d);
     
     const homeDistance = Math.hypot(this.x - this.homeX, this.y - this.homeY);
     if (this.state === AI_STATES.IDLE && this.behaviorType !== 'passive' && EnemyAISystem.canAggro(this, d) && d < this.detectionRange) {
@@ -115,6 +126,32 @@ export class Enemy extends Entity {
     }
   }
 
+  updateBossSpecial(dt, player, distance) {
+    if (this.base.type !== 'boss') return;
+    this.bossPhase = this.hp <= this.base.maxHp * .33 ? 3 : this.hp <= this.base.maxHp * .66 ? 2 : 1;
+    if (this.telegraphTimer > 0) {
+      this.telegraphTimer -= dt;
+      if (this.telegraphTimer <= 0) {
+        this.specialPending = false;
+        if (distance <= this.specialRadius + player.r && CombatSystem.applyDamage(player, CombatSystem.calculateDamage(this, player, 1.25), this)) {
+          player.hp = player.maxHp;
+          player.updateState('dead');
+          UISystem.logMsg('💀 Derrotado! Retornando ao refúgio.', 'dmg');
+          SceneManager.loadScene('cidade', 800, 600);
+        }
+      }
+      return;
+    }
+    this.specialCooldown -= dt;
+    if (this.specialCooldown <= 0 && !this.specialPending) {
+      this.specialPending = true;
+      this.telegraphTimer = .75;
+      this.specialRadius = 62 + this.bossPhase * 12;
+      this.specialCooldown = Math.max(2.5, 5 - this.bossPhase * .7);
+      UISystem.logMsg(`${this.base.name} prepara um ataque especial!`, 'dmg');
+    }
+  }
+
   draw(ctx, camera) {
     if (!this.alive) return;
     const sx = this.x - camera.x;
@@ -123,6 +160,16 @@ export class Enemy extends Entity {
     const offset = this.base.size * 0.82;
     
     SpriteSystem.draw(ctx, this.base.spriteKey, sx, sy, { state: this.state, frame: this.frameIndex, facing: this.facing, size: this.base.size, anchorY: this.base.size * 0.82 });
+
+    if (this.telegraphTimer > 0) {
+      ctx.globalAlpha = .35 + Math.sin(this.telegraphTimer * 18) * .1;
+      ctx.strokeStyle = '#ef806c';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(sx, sy, this.specialRadius, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
     
     ctx.fillStyle = '#fff';
     ctx.font = '11px sans-serif';

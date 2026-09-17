@@ -13,8 +13,11 @@ import { GameLoop } from './gameLoop.js';
 import { ITEMS_DB } from '../data/items.js';
 import { EquipmentSystem } from '../systems/equipment.js';
 import { CombatSystem } from '../systems/combat.js';
+import { QuestSystem } from '../systems/quests.js';
+import { SaveSystem } from '../systems/save.js';
 
 export class Game {
+  static saveTimer = 0;
   static init() {
     const launchNotice = document.getElementById('launchNotice');
     if (launchNotice) launchNotice.remove();
@@ -32,6 +35,9 @@ export class Game {
     GameState.inventory = [ITEMS_DB.arco_luar, ITEMS_DB.cajado_aqua, ITEMS_DB.lamina_raiz, ITEMS_DB.tunica_ilya, { ...ITEMS_DB.pocao_luz, quantity: 3 }];
     GameState.player.equipment.weapon = ITEMS_DB.espada_aprendiz;
     EquipmentSystem.recalcStats();
+    SaveSystem.loadGame();
+    QuestSystem.init();
+    QuestSystem.updateUI();
     
     window.addEventListener('resize', () => {
       GameState.canvasW = window.innerWidth;
@@ -50,9 +56,11 @@ export class Game {
     UISystem.logMsg('Sistema World 2D & Pixel Art Inicializado!', 'sys');
     
     GameLoop.start();
+    window.addEventListener('beforeunload', () => SaveSystem.saveGame());
   }
 
   static update(dt) {
+    if (GameState.paused) return;
     if (GameState.isTransitioning) return;
     if (GameState.hitStop > 0) {
       GameState.hitStop = Math.max(0, GameState.hitStop - dt);
@@ -61,9 +69,12 @@ export class Game {
     }
     
     SkillSystem.updateCooldowns(dt);
+    this.saveTimer += dt;
+    if (this.saveTimer >= 30) { this.saveTimer = 0; SaveSystem.saveGame(); }
     
     GameState.player.update(dt);
     GameState.pet.update(dt);
+    UISystem.updateSpritePanel();
     
     Camera.follow(GameState.player, dt);
     
@@ -73,7 +84,8 @@ export class Game {
     
     if (GameState.currentScene && GameState.currentScene.combatAllowed) {
       for (const enemy of GameState.enemies) {
-        enemy.update(dt);
+        const distance = Math.hypot(enemy.x - GameState.player.x, enemy.y - GameState.player.y);
+        if (distance < Math.max(GameState.canvasW, GameState.canvasH) * 1.5) enemy.update(dt);
       }
     }
     
@@ -105,7 +117,7 @@ export class Game {
     const entities = [];
     
     for (const enemy of GameState.enemies) {
-      if (enemy.alive) entities.push(enemy);
+      if (enemy.alive && Camera.isVisible(enemy.x, enemy.y)) entities.push(enemy);
     }
     entities.push(GameState.pet);
     entities.push(GameState.player);

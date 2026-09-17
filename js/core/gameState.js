@@ -11,6 +11,7 @@ export const GameState = {
   quests: [],
   flags: {}, 
   progress: {}, 
+  paused: false,
   
   isTransitioning: false,
   hitStop: 0,
