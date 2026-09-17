@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Grand Fantasia Web - Pixel Art Edition</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="gameWrap">
+  <canvas id="game"></canvas>
+  <div id="launchNotice">Inicie pelo arquivo <strong>iniciar-jogo.bat</strong> para carregar o jogo.</div>
+  <div id="fadeOverlay"></div>
+  <div id="interactionHint" aria-live="polite"><kbd>E</kbd><span>Interagir</span></div>
+  
+  <div id="topbar">
+    <div class="status-group">
+      <b id="pName">Aprendiz Lv.<span id="pLv">1</span></b>
+      <span>HP <div class="bar"><div id="hpFill"></div></div></span>
+      <span>MP <div class="bar"><div id="mpFill"></div></div></span>
+      <span>EXP <div class="bar"><div id="expFill"></div></div></span>
+    </div>
+    <div class="status-group">
+      <b style="color:#b19cd9; margin-right:10px;" id="mapNameUI">📍 Cidade Principal</b>
+      <span style="color:#f1c40f">💰 <span id="pGold">0</span> | Atk: <span id="pAtk">10</span></span>
+    </div>
+  </div>
+
+  <div id="spritePanel">
+    <h3>Mesa do Sprite</h3>
+    <div class="material-counter"><span>⛏️ Minérios:</span> <strong id="mMinerals" style="color:#3498db">0</strong></div>
+    <div class="material-counter"><span>🪵 Madeira:</span> <strong id="mWood" style="color:#d35400">0</strong></div>
+    <div class="material-counter"><span>🌿 Ervas:</span> <strong id="mHerbs" style="color:#2ecc71">0</strong></div>
+    
+    <button class="sprite-btn" id="btnGatherMin" onclick="GameAPI.spriteGather('minerals', 120, 'Minérios')">⛏️ Coletar Minério</button>
+    <button class="sprite-btn" id="btnGatherWood" onclick="GameAPI.spriteGather('wood', 240, 'Madeira')">🪵 Coletar Madeira</button>
+    <button class="sprite-btn" id="btnGatherHerb" onclick="GameAPI.spriteGather('herbs', 360, 'Ervas')">🌿 Coletar Ervas</button>
+    <hr style="border-color:#33294c; margin:6px 0;">
+    <button class="sprite-btn" onclick="GameAPI.spriteCraft('Espada Longa')">⚔️ Forjar Espada Longa</button>
+  </div>
+
+  <div id="playerWindows">
+    <div class="ui-panel">
+      <h3>🛡️ Equipamentos</h3>
+      <div id="equipContainer">
+        <div class="equip-slot" onclick="GameAPI.unequipItem('weapon')" id="eq-weapon"><span class="equip-label">Arma</span><br>Vazio</div>
+        <div class="equip-slot" onclick="GameAPI.unequipItem('armor')" id="eq-armor"><span class="equip-label">Armadura</span><br>Vazio</div>
+        <div class="equip-slot" onclick="GameAPI.unequipItem('accessory')" id="eq-accessory"><span class="equip-label">Acessório</span><br>Vazio</div>
+      </div>
+    </div>
+    <div class="ui-panel">
+      <h3>🎒 Mochila (I)</h3>
+      <div id="invGrid"></div>
+    </div>
+  </div>
+
+  <div id="hotbar">
+    <div class="slot" data-skill="0"><span class="key">1 / Espaço</span><span class="icon">⚔️</span>Ataque</div>
+    <div class="slot" data-skill="1"><span class="key">2</span><span class="icon">💥</span>Golpe</div>
+    <div class="slot" data-skill="2"><span class="key">3</span><span class="icon">✦</span>Orbe</div>
+    <div class="slot" data-skill="3"><span class="key">4</span><span class="icon">✚</span>Cura</div>
+  </div>
+
+  <div id="log"></div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

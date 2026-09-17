@@ -1,0 +1,10 @@
+export const ENEMIES_DB = {
+  gelatina_lunar: { name: 'Gelatina Lunar', maxHp: 36, atk: 5, r: 18, exp: 18, gold: [4, 9], aggro: 135, spriteKey: 'slime', size: 46, type: 'normal', drop: { name: 'Núcleo Lunar', type: 'material' }, respawnTime: 7, moveSpeed: 92, atkCd: 1 },
+  cogumelo_espinho: { name: 'Cogumelo Espinho', maxHp: 48, atk: 7, r: 19, exp: 25, gold: [5, 12], aggro: 145, spriteKey: 'mushroom', size: 48, type: 'normal', drop: { name: 'Esporo Brilhante', type: 'material' }, respawnTime: 8, moveSpeed: 70, atkCd: 1.15 },
+  lobo_raiz: { name: 'Lobo da Raiz', maxHp: 66, atk: 9, r: 20, exp: 34, gold: [7, 15], aggro: 165, spriteKey: 'wolf', size: 52, type: 'normal', drop: { name: 'Presa Enraizada', type: 'material' }, respawnTime: 8, moveSpeed: 118, atkCd: 0.85 },
+  espectro_aqua: { name: 'Espectro Aqua', maxHp: 74, atk: 11, r: 21, exp: 42, gold: [9, 18], aggro: 180, spriteKey: 'wisp', size: 54, type: 'normal', drop: { name: 'Essência Espectral', type: 'material' }, respawnTime: 9, moveSpeed: 104, atkCd: 1.05 },
+  sentinela_osso: { name: 'Sentinela de Osso', maxHp: 95, atk: 13, r: 24, exp: 54, gold: [12, 22], aggro: 195, spriteKey: 'golem', size: 58, type: 'normal', drop: { name: 'Fragmento Rúnico', type: 'material' }, respawnTime: 10, moveSpeed: 76, atkCd: 1.25 },
+  rainha_gelatina: { name: 'Rainha da Lua Rubra', maxHp: 420, atk: 18, r: 34, exp: 175, gold: [55, 100], aggro: 250, spriteKey: 'slimeQueen', size: 86, type: 'boss', drop: { name: 'Lâmina Lunar', type: 'weapon', bonusAtk: 14, rarity: 'rare' }, moveSpeed: 72, atkCd: 1.15 },
+  guardiao_raiz: { name: 'Guardião do Carvalho', maxHp: 650, atk: 24, r: 37, exp: 300, gold: [100, 180], aggro: 260, spriteKey: 'rootGuardian', size: 92, type: 'boss', drop: { name: 'Cota do Bosque', type: 'armor', bonusHp: 90, rarity: 'rare' }, moveSpeed: 66, atkCd: 1.2 },
+  lich_cripta: { name: 'Lich das Marés Mortas', maxHp: 900, atk: 31, r: 39, exp: 470, gold: [170, 270], aggro: 280, spriteKey: 'cryptLich', size: 96, type: 'boss', drop: { name: 'Relíquia Abissal', type: 'accessory', bonusAtk: 16, bonusHp: 55, rarity: 'epic' }, moveSpeed: 78, atkCd: 1.05 }
+};

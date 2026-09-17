@@ -1,0 +1,30 @@
+export const CONFIG = Object.freeze({
+  INV_MAX_SLOTS: 16,
+  FPS: 60,
+  TILE_SIZE: 48,
+  WORLD_PADDING: 18,
+  PLAYER_SPEED: 270,
+  ENEMY_SPEED_MULT: 0.8,
+  PET_SPEED: 5,
+  BASE_EXP_REQ: 50,
+  EXP_CURVE: 1.6,
+  MP_REGEN_RATE: 2,
+  MP_REGEN_INTERVAL: 0.5,
+  
+  // Combate
+  BASE_CRIT_CHANCE: 0.05,
+  CRIT_MULT: 1.5,
+  BASE_DODGE_CHANCE: 0.05,
+  MIN_DAMAGE: 1,
+  HIT_STOP_TIME: 0.045,
+  
+  // Interação
+  INTERACT_RANGE: 60,
+  
+  // Visual e Câmera
+  CAMERA_LERP: 10,
+  ANIMATION_FPS: 8,
+  ATTACK_LOCK_TIME: 0.22,
+  HURT_LOCK_TIME: 0.16,
+  PIXEL_SCALE: 2
+});
