@@ -3,7 +3,7 @@ const ring = (type, cx, cy, amount, radius) => Array.from({ length: amount }, (_
 export const SCENES_DB = {
   cidade: {
     id: 'cidade', name: 'Cidade de Ilya', type: 'city', combatAllowed: false, theme: 'town', tileKey: 'tileTown', width: 1680, height: 1200,
-    portals: [{ x: 1580, y: 600, r: 32, color: '#78f3e3', dest: 'planiciesSafael', spawnX: 260, spawnY: 700, text: 'Estrada para Safael' }],
+    portals: [{ x: 1580, y: 600, r: 32, color: '#78f3e3', dest: 'planiciesSafael', spawnX: 260, spawnY: 700, text: 'Estrada para Safael' }, { x: 300, y: 310, r: 32, color: '#6bcf8b', dest: 'bosqueRaiz', spawnX: 220, spawnY: 930, text: 'Bosque da Raiz' }, { x: 1320, y: 310, r: 32, color: '#a879df', dest: 'criptaAqua', spawnX: 160, spawnY: 860, text: 'Cripta Aqua' }, { x: 1500, y: 900, r: 32, color: '#d0ad68', dest: 'jardimNebuloso', spawnX: 100, spawnY: 700, text: 'Jardim Nebuloso' }],
     spawns: [], npcs: [{ id: 'npc_blacksmith', name: 'Mestre Ferreiro', x: 810, y: 560, r: 20, type: 'crafting', color: '#d18b52', text: 'E - Forjar' }, { id: 'npc_guide', name: 'Guia de Ilya', x: 690, y: 630, r: 18, type: 'dialogue', color: '#7696d6', text: 'E - Falar' }, { id: 'npc_merchant', name: 'Mercadora Nara', x: 930, y: 560, r: 18, type: 'shop', color: '#d9a65a', text: 'E - Comprar' }],
     objects: [{ type: 'fountain', x: 810, y: 760 }, { type: 'chest', x: 610, y: 700 }, { type: 'chest', x: 1030, y: 700 }, { type: 'banner', x: 500, y: 520 }, { type: 'banner', x: 1120, y: 520 }, { type: 'tree', x: 360, y: 420 }, { type: 'tree', x: 1260, y: 420 }, ...ring('lamp', 810, 760, 6, 180), ...ring('flower', 810, 760, 8, 250)]
   },
