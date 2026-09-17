@@ -13,6 +13,7 @@ import { ChestSystem } from '../systems/chests.js';
 import { ShopSystem } from '../systems/shop.js';
 import { AnimationController } from '../systems/animation.js';
 import { CombatSystem } from '../systems/combat.js';
+import { IMAGES } from '../data/assets.js';
 
 export class Player extends Entity {
   constructor(x, y) {
@@ -149,8 +150,11 @@ export class Player extends Entity {
     const sx = this.x - camera.x;
     const sy = this.y - camera.y;
     
-    ctx.fillStyle = 'rgba(10, 18, 26, .35)';
-    ctx.beginPath(); ctx.ellipse(sx, sy + 2, 15, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(10, 18, 26, .42)';
+    ctx.beginPath(); ctx.ellipse(sx, sy + 3, 16, 6, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(129, 227, 205, .28)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.ellipse(sx, sy + 3, 12, 4, 0, 0, Math.PI * 2); ctx.stroke();
     const animationState = this.animationController.state === 'WALK' ? 'moving' : this.animationController.state === 'IDLE' ? 'idle' : this.animationController.state.includes('STAFF') ? 'casting' : 'attacking';
     SpriteSystem.draw(ctx, 'player', sx, sy, { state: animationState, frame: this.animationController.getFrame(), facing: this.facing, anchorY: 42 });
     this.drawWeapon(ctx, sx, sy);
@@ -164,19 +168,28 @@ export class Player extends Entity {
   drawWeapon(ctx, x, y) {
     const weapon = this.equipment.weapon;
     if (!weapon) return;
+    const assetKey = weapon.weaponStyle === 'bow' ? 'bowWeapon' : weapon.weaponStyle === 'staff' ? 'staffWeapon' : 'swordWeapon';
+    const image = IMAGES[assetKey];
     const direction = this.facing === 'left' ? -1 : this.facing === 'right' ? 1 : 0;
-    ctx.save(); ctx.translate(x + direction * 10, y - 20);
+    ctx.save();
+    ctx.translate(x + direction * 10, y - 20);
     if (this.facing === 'up') ctx.globalAlpha = .85;
     ctx.rotate(this.facing === 'down' ? Math.PI / 2 : direction < 0 ? Math.PI : 0);
-    if (weapon.weaponStyle === 'bow') {
-      ctx.strokeStyle = '#d9a65a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 13, -Math.PI / 2, Math.PI / 2, direction < 0); ctx.stroke();
-      ctx.strokeStyle = '#eef8f0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, -13); ctx.lineTo(0, 13); ctx.stroke();
-    } else if (weapon.weaponStyle === 'staff') {
-      ctx.strokeStyle = '#795442'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, 14); ctx.lineTo(0, -15); ctx.stroke();
-      ctx.fillStyle = '#78f3e3'; ctx.shadowColor = '#78f3e3'; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(0, -17, 4 + Math.sin(GameState.elapsed * 8), 0, Math.PI * 2); ctx.fill();
+
+    if (image && image.complete) {
+      const size = weapon.weaponStyle === 'staff' ? 30 : weapon.weaponStyle === 'bow' ? 26 : 24;
+      ctx.drawImage(image, -size / 2, -size / 2, size, size);
     } else {
-      ctx.strokeStyle = '#d9e6e6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-2, 12); ctx.lineTo(0, -17); ctx.stroke();
-      ctx.strokeStyle = '#e7b65c'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-4, 1); ctx.lineTo(4, 1); ctx.stroke();
+      if (weapon.weaponStyle === 'bow') {
+        ctx.strokeStyle = '#d9a65a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, 13, -Math.PI / 2, Math.PI / 2, direction < 0); ctx.stroke();
+        ctx.strokeStyle = '#eef8f0'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, -13); ctx.lineTo(0, 13); ctx.stroke();
+      } else if (weapon.weaponStyle === 'staff') {
+        ctx.strokeStyle = '#795442'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, 14); ctx.lineTo(0, -15); ctx.stroke();
+        ctx.fillStyle = '#78f3e3'; ctx.shadowColor = '#78f3e3'; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(0, -17, 4 + Math.sin(GameState.elapsed * 8), 0, Math.PI * 2); ctx.fill();
+      } else {
+        ctx.strokeStyle = '#d9e6e6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-2, 12); ctx.lineTo(0, -17); ctx.stroke();
+        ctx.strokeStyle = '#e7b65c'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-4, 1); ctx.lineTo(4, 1); ctx.stroke();
+      }
     }
     ctx.restore(); ctx.globalAlpha = 1;
   }

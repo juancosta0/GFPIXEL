@@ -166,6 +166,14 @@ export class Enemy extends Entity {
     const bob = this.base.type === 'boss' ? Math.sin(GameState.elapsed * 2) * 2 : this.base.spriteKey === 'slime' ? Math.sin(GameState.elapsed * 5) * 2 : 0;
     
     const offset = this.base.size * 0.82;
+
+    ctx.fillStyle = this.base.type === 'boss' ? 'rgba(35, 12, 22, .55)' : 'rgba(10, 18, 26, .38)';
+    ctx.beginPath(); ctx.ellipse(sx, sy + 3, Math.max(13, this.base.size * .34), Math.max(4, this.base.size * .13), 0, 0, Math.PI * 2); ctx.fill();
+    if (this.base.type === 'boss' || this.base.elite) {
+      ctx.strokeStyle = this.base.type === 'boss' ? 'rgba(217, 90, 101, .42)' : 'rgba(244, 201, 106, .34)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.ellipse(sx, sy + 3, Math.max(11, this.base.size * .28), Math.max(3, this.base.size * .1), 0, 0, Math.PI * 2); ctx.stroke();
+    }
     
     SpriteSystem.draw(ctx, this.base.spriteKey, sx, sy + bob, { state: this.state, frame: this.frameIndex, facing: this.facing, size: this.base.size, anchorY: this.base.size * 0.82 });
 
@@ -184,14 +192,15 @@ export class Enemy extends Entity {
       ctx.beginPath(); ctx.arc(sx, sy + bob - offset / 2, offset * .8, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
     }
     
-    ctx.fillStyle = '#fff';
-    ctx.font = '11px sans-serif';
+    ctx.fillStyle = this.base.type === 'boss' ? '#ffe28a' : '#eef8f0';
+    ctx.font = this.base.type === 'boss' ? 'bold 11px sans-serif' : '11px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(this.base.name, sx, sy - offset - 4);
     
     ctx.fillStyle = '#111';
-    ctx.fillRect(sx - 20, sy - offset + 5, 40, 5);
-    ctx.fillStyle = this.base.type === 'boss' ? '#d98c4e' : '#cc5965';
-    ctx.fillRect(sx - 19, sy - offset + 6, 38 * (this.hp / this.base.maxHp), 3);
+    const barWidth = this.base.type === 'boss' ? 52 : this.base.elite ? 44 : 40;
+    ctx.fillRect(sx - barWidth / 2, sy - offset + 5, barWidth, 5);
+    ctx.fillStyle = this.base.type === 'boss' ? '#d98c4e' : this.base.elite ? '#e3b95f' : '#cc5965';
+    ctx.fillRect(sx - barWidth / 2 + 1, sy - offset + 6, (barWidth - 2) * Math.max(0, this.hp / this.base.maxHp), 3);
   }
 }
