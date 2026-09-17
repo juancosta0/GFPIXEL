@@ -67,6 +67,9 @@ kbd { padding:2px 5px; color:#20172f; background:#f2c14e; border:2px solid #fff0
 .slot:hover { border-color:#f1d17a; color:#fff; background:#1c4143; }
 .slot .key { position:absolute; top:2px; left:4px; font-size:9px; color:#f1d17a; font-weight:bold; }
 .slot .icon { font-size:20px; }
+.slot { position:relative; }
+.slot.on-cooldown { opacity:.65; }
+.cooldown { position:absolute; right:4px; bottom:2px; color:#f1d17a; font-size:10px; font-weight:bold; }
 
 /* ===== LOG ===== */
 #log {

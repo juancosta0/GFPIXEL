@@ -17,6 +17,9 @@ export const CONFIG = Object.freeze({
   BASE_DODGE_CHANCE: 0.05,
   MIN_DAMAGE: 1,
   HIT_STOP_TIME: 0.045,
+  BASIC_ATTACK_COOLDOWN: 0.32,
+  BASIC_ATTACK_RANGE: 58,
+  BASIC_ATTACK_ARC: Math.PI / 1.55,
   
   // Interação
   INTERACT_RANGE: 60,
@@ -26,5 +29,6 @@ export const CONFIG = Object.freeze({
   ANIMATION_FPS: 8,
   ATTACK_LOCK_TIME: 0.22,
   HURT_LOCK_TIME: 0.16,
-  PIXEL_SCALE: 2
+  PIXEL_SCALE: 2,
+  LEVEL_REWARDS: { hp: 20, mp: 5, atk: 4, def: 1 }
 });

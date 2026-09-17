@@ -5,6 +5,7 @@ import { EquipmentSystem } from '../systems/equipment.js';
 import { UISystem } from '../ui/ui.js';
 import { CONFIG } from '../data/config.js';
 import { SpriteSystem } from '../systems/sprite.js';
+import { ProgressionSystem } from '../systems/progression.js';
 
 export class Player extends Entity {
   constructor(x, y) {
@@ -18,10 +19,12 @@ export class Player extends Entity {
     this.materials = { minerals: 0, wood: 0, herbs: 0 };
     
     // Status
-    this.baseAtk = 10;
-    this.baseMaxHp = 100;
-    this.baseMaxMp = 50;
-    this.baseDef = 0;
+    this.baseStats = { hp: 100, mp: 50, atk: 10, def: 0, crit: CONFIG.BASE_CRIT_CHANCE, speed: CONFIG.PLAYER_SPEED };
+    this.baseAtk = this.baseStats.atk;
+    this.baseMaxHp = this.baseStats.hp;
+    this.baseMaxMp = this.baseStats.mp;
+    this.baseDef = this.baseStats.def;
+    this.temporaryBuffs = {};
     
     this.atk = 10;
     this.critChance = CONFIG.BASE_CRIT_CHANCE;
@@ -39,17 +42,7 @@ export class Player extends Entity {
   }
 
   addExp(amount) {
-    this.exp += amount;
-    while (this.exp >= this.expNext) {
-      this.exp -= this.expNext;
-      this.lv++;
-      this.expNext = Math.round(this.expNext * CONFIG.EXP_CURVE);
-      this.baseMaxHp += 20;
-      this.baseAtk += 4;
-      EquipmentSystem.recalcStats();
-      this.hp = this.maxHp;
-      UISystem.logMsg(`🌟 LEVEL UP! Nível ${this.lv}!`, 'sys');
-    }
+    ProgressionSystem.addExperience(this, amount);
   }
 
   updateMovement(dt) {

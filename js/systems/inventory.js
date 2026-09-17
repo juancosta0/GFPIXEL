@@ -4,6 +4,15 @@ import { UISystem } from '../ui/ui.js';
 import { CONFIG } from '../data/config.js';
 
 export class InventorySystem {
+  static addItem(item, quantity = item?.quantity || 1) {
+    if (!item) return false;
+    const normalized = { ...item, id: item.id || item.name.toLowerCase().replace(/[^a-z0-9]+/g, '_') };
+    const existing = normalized.stackable && GameState.inventory.find(entry => entry.id === normalized.id);
+    if (existing) { existing.quantity = (existing.quantity || 1) + quantity; return true; }
+    if (GameState.inventory.length >= CONFIG.INV_MAX_SLOTS) return false;
+    GameState.inventory.push({ ...normalized, quantity: normalized.stackable ? quantity : 1 });
+    return true;
+  }
   static useItem(index) {
     const item = GameState.inventory[index];
     if (!item || item.type === 'material') return;

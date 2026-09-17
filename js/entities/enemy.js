@@ -7,11 +7,16 @@ import { SceneManager } from '../core/sceneManager.js';
 import { SpriteSystem } from '../systems/sprite.js';
 import { CONFIG } from '../data/config.js';
 import { CombatSystem } from '../systems/combat.js';
+import { EnemyAISystem, AI_STATES } from '../systems/ai.js';
+import { ProgressionSystem } from '../systems/progression.js';
+
+let nextEnemyId = 1;
 
 export class Enemy extends Entity {
   constructor(dbId, x, y) {
     const base = ENEMIES_DB[dbId];
     super(x, y, base.r);
+    this.id = `enemy-${nextEnemyId++}`;
     this.base = base;
     this.hp = base.maxHp;
     this.state = 'idle';
@@ -23,24 +28,28 @@ export class Enemy extends Entity {
     this.detectionRange = base.aggro;
     this.attackRange = base.attackRange || base.r + 18;
     this.leashRange = base.leashRange || base.aggro * 2.5;
+    this.movementSpeed = base.moveSpeed * CONFIG.ENEMY_SPEED_MULT;
+    this.damage = base.damage ?? base.atk;
+    this.defense = base.defense || 0;
+    this.attackCooldown = base.attackCooldown ?? base.atkCd;
+    this.aggroDuration = base.aggroDuration || 8;
     this.behaviorType = base.behaviorType || (base.type === 'boss' ? 'boss' : 'aggressive');
+    this.wasAttacked = false;
     this.patrolAngle = Math.random() * Math.PI * 2;
   }
 
   die() {
     this.alive = false;
-    this.updateState('dead');
+    this.updateState(AI_STATES.DEAD);
     this.respawnTimer = this.base.respawnTime;
     
     const g = Math.floor(Math.random() * (this.base.gold[1] - this.base.gold[0])) + this.base.gold[0];
     GameState.player.gold += g;
-    GameState.player.addExp(this.base.exp);
+    ProgressionSystem.addExperience(GameState.player, this.base.exp);
     
     UISystem.logMsg(`Derrotou ${this.base.name}! +${g} Ouro`, 'gold');
     
-    if (this.base.type === 'boss' || Math.random() <= 0.6) {
-      LootSystem.spawnDrop(this.x, this.y, this.base.drop);
-    }
+    for (const item of LootSystem.roll(this)) LootSystem.spawnDrop(this.x, this.y, item);
     if (this.base.type === 'boss') {
       UISystem.logMsg('✨ CHEFE DERROTADO!', 'gold');
     }
@@ -53,7 +62,7 @@ export class Enemy extends Entity {
         if (this.respawnTimer <= 0) {
           this.hp = this.base.maxHp;
           this.alive = true;
-          this.updateState('idle');
+          this.updateState(AI_STATES.IDLE);
           this.x = this.homeX;
           this.y = this.homeY;
         }
@@ -62,9 +71,9 @@ export class Enemy extends Entity {
     }
     
     super.update(dt);
-    if (this.state === 'hurt') {
+    if (this.state === AI_STATES.HURT) {
       if (this.stateTimer < CONFIG.HURT_LOCK_TIME) return;
-      this.updateState('aggro');
+      this.updateState(AI_STATES.CHASE);
     }
     
     if (this.atkCd > 0) this.atkCd -= dt;
@@ -73,22 +82,21 @@ export class Enemy extends Entity {
     const d = Math.hypot(p.x - this.x, p.y - this.y);
     
     const homeDistance = Math.hypot(this.x - this.homeX, this.y - this.homeY);
-    if (this.state === 'idle' && this.behaviorType !== 'passive' && d < this.detectionRange) {
-      this.updateState('aggro');
+    if (this.state === AI_STATES.IDLE && this.behaviorType !== 'passive' && EnemyAISystem.canAggro(this, d) && d < this.detectionRange) {
+      this.updateState(AI_STATES.DETECT);
     }
-    if (this.state === 'attacking' && this.stateTimer >= 0.18) this.updateState('aggro');
+    if (this.state === AI_STATES.DETECT) this.updateState(AI_STATES.CHASE);
+    if (this.state === AI_STATES.ATTACK && this.stateTimer >= 0.18) this.updateState(AI_STATES.CHASE);
     
-    if (this.state === 'aggro' || this.state === 'moving') {
-      if (homeDistance > this.leashRange && this.base.type !== 'boss') {
-        this.updateState('retreat');
+    if (this.state === AI_STATES.CHASE || this.state === 'moving') {
+      if (EnemyAISystem.shouldLeash(this, homeDistance)) {
+        this.updateState(AI_STATES.RETREAT);
       } else if (d > this.attackRange + p.r) {
-        this.updateState('moving');
-        this.x += (p.x - this.x) / d * this.base.moveSpeed * CONFIG.ENEMY_SPEED_MULT * dt;
-        this.y += (p.y - this.y) / d * this.base.moveSpeed * CONFIG.ENEMY_SPEED_MULT * dt;
-        this.facing = (p.x - this.x) > 0 ? 'right' : 'left';
+        this.updateState(AI_STATES.CHASE);
+        EnemyAISystem.moveTo(this, p.x, p.y, this.movementSpeed, dt);
       } else if (this.atkCd <= 0) {
-        this.updateState('attacking');
-        this.atkCd = this.base.atkCd;
+        this.updateState(AI_STATES.ATTACK);
+        this.atkCd = this.attackCooldown;
         if (CombatSystem.applyDamage(p, CombatSystem.calculateDamage(this, p), this)) {
           p.hp = p.maxHp;
           p.updateState('dead');
@@ -96,15 +104,14 @@ export class Enemy extends Entity {
           SceneManager.loadScene('cidade', 800, 600);
         }
       }
-      if (d > this.base.aggro * 2.5) {
-        this.updateState('idle');
+      if (d > this.detectionRange + this.leashRange) {
+        this.updateState(AI_STATES.IDLE);
       }
     }
-    if (this.state === 'retreat') {
+    if (this.state === AI_STATES.RETREAT) {
       const home = Math.hypot(this.homeX - this.x, this.homeY - this.y);
-      if (home < 5) { this.updateState('idle'); return; }
-      this.x += (this.homeX - this.x) / home * this.base.moveSpeed * dt;
-      this.y += (this.homeY - this.y) / home * this.base.moveSpeed * dt;
+      if (home < 5) { this.wasAttacked = false; this.updateState(AI_STATES.IDLE); return; }
+      EnemyAISystem.moveTo(this, this.homeX, this.homeY, this.movementSpeed, dt);
     }
   }
 

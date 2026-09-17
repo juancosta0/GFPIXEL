@@ -15,6 +15,7 @@ export const GameState = {
   isTransitioning: false,
   hitStop: 0,
   projectiles: [],
+  hitRegistry: new Set(),
   
   canvasW: window.innerWidth,
   canvasH: window.innerHeight,

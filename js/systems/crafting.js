@@ -2,6 +2,7 @@ import { GameState } from '../core/gameState.js';
 import { RECIPES_DB } from '../data/recipes.js';
 import { UISystem } from '../ui/ui.js';
 import { CONFIG } from '../data/config.js';
+import { InventorySystem } from './inventory.js';
 
 export class CraftingSystem {
   static craft(recipeName) {
@@ -26,10 +27,9 @@ export class CraftingSystem {
       else if (rng <= 0.40) { rarity = 'rare'; multiplier = 1.35; rarityName = 'Raro'; }
 
       const finalAtk = Math.round(rec.baseAtk * multiplier);
-      const craftedItem = { name: `${recipeName} [${rarityName}]`, type: rec.type, bonusAtk: finalAtk, rarity: rarity };
+      const craftedItem = { ...(rec.output || {}), name: `${recipeName} [${rarityName}]`, type: rec.type, stats: { ...(rec.output?.stats || {}), attack: finalAtk }, rarity, description: `Produzido com qualidade ${rarityName}.`, level: 1, stackable: false };
 
-      if (GameState.inventory.length < CONFIG.INV_MAX_SLOTS) {
-        GameState.inventory.push(craftedItem);
+      if (InventorySystem.addItem(craftedItem)) {
         UISystem.logMsg(`✨ Forjou ${craftedItem.name} (+${finalAtk} Atk)!`, 'gold');
         UISystem.updateUI();
       } else {

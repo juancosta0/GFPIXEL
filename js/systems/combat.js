@@ -14,11 +14,41 @@ export class CombatSystem {
     if (target.alive === false) return false;
     target.hp = Math.max(0, target.hp - hit.amount);
     target.lastHit = { ...hit, source, at: GameState.elapsed };
+    if (target.wasAttacked !== undefined) target.wasAttacked = true;
     ParticleEffectsSystem.addDamageText(target.x, target.y - target.r - 12, hit.crit ? `${hit.amount}!` : hit.amount, hit.crit ? '#ffe28a' : '#ff8b86');
     GameState.hitStop = CONFIG.HIT_STOP_TIME;
     if (target.hp <= 0) return this.handleDeath(target);
     if (target !== GameState.player) target.updateState('hurt');
     return false;
+  }
+  static getHitbox(attacker, skill) {
+    const angle = this.angle(attacker.facing);
+    return { x: attacker.x, y: attacker.y, angle, range: skill.range, arc: skill.area || Math.PI * 2 };
+  }
+  static isInsideHitbox(target, hitbox) {
+    const dx = target.x - hitbox.x, dy = target.y - hitbox.y;
+    const distance = Math.hypot(dx, dy);
+    if (distance > hitbox.range + target.r) return false;
+    if (hitbox.arc >= Math.PI * 2) return true;
+    return Math.abs(this.diff(Math.atan2(dy, dx), hitbox.angle)) <= hitbox.arc / 2;
+  }
+  static basicAttack() {
+    const player = GameState.player;
+    const skill = { ...this.basicAttackSkill(player), id: 'basic-attack' };
+    player.updateState(skill.animation);
+    const hitbox = this.getHitbox(player, skill);
+    const hitId = `${player.id || 'player'}:${GameState.elapsed}`;
+    for (const enemy of GameState.enemies) {
+      if (enemy.alive && !GameState.hitRegistry.has(`${hitId}:${enemy.id}`) && this.isInsideHitbox(enemy, hitbox)) {
+        GameState.hitRegistry.add(`${hitId}:${enemy.id}`);
+        this.applyDamage(enemy, this.calculateDamage(player, enemy, skill.damage), player);
+      }
+    }
+    GameState.hitRegistry.clear();
+    ParticleEffectsSystem.addPlayerAttackEffect(player.x, player.y, hitbox.angle, skill.range * .7);
+  }
+  static basicAttackSkill(player) {
+    return { range: CONFIG.BASIC_ATTACK_RANGE, area: CONFIG.BASIC_ATTACK_ARC, damage: 1, animation: 'attacking' };
   }
   static handleDeath(target) { if (target === GameState.player) return true; target.die(); return true; }
   static executePlayerSkill(skill) {
@@ -26,12 +56,16 @@ export class CombatSystem {
     player.updateState(skill.animation);
     if (skill.type === 'heal') { player.hp = Math.min(player.maxHp, player.hp + skill.healAmt); ParticleEffectsSystem.addDamageText(player.x, player.y - 45, `+${skill.healAmt}`, '#7ef0b2'); return; }
     if (skill.type === 'projectile') { GameState.projectiles.push({ x: player.x + Math.cos(angle) * 25, y: player.y + Math.sin(angle) * 25, angle, speed: 390, life: skill.range / 390, radius: skill.area, skill }); return; }
+    const hitbox = this.getHitbox(player, skill);
+    const hitId = `${player.id || 'player'}:${GameState.elapsed}:${skill.id}`;
     for (const enemy of GameState.enemies) {
       if (!enemy.alive) continue;
-      const distance = Math.hypot(enemy.x - player.x, enemy.y - player.y);
-      const difference = Math.abs(this.diff(Math.atan2(enemy.y - player.y, enemy.x - player.x), angle));
-      if (distance <= skill.range + enemy.r && difference <= skill.area / 2) this.applyDamage(enemy, this.calculateDamage(player, enemy, skill.damage), player);
+      if (!GameState.hitRegistry.has(`${hitId}:${enemy.id}`) && this.isInsideHitbox(enemy, hitbox)) {
+        GameState.hitRegistry.add(`${hitId}:${enemy.id}`);
+        this.applyDamage(enemy, this.calculateDamage(player, enemy, skill.damage), player);
+      }
     }
+    GameState.hitRegistry.clear();
     ParticleEffectsSystem.addPlayerAttackEffect(player.x, player.y, angle, skill.range * .7);
   }
   static update(dt) {

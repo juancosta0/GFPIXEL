@@ -27,6 +27,7 @@ export class SceneManager {
       GameState.damageTexts = [];
       GameState.effects = [];
       GameState.projectiles = [];
+      GameState.hitRegistry = new Set();
       GameState.drops = [];
       GameState.enemies = [];
       

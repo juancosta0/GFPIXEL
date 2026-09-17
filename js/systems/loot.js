@@ -2,8 +2,23 @@ import { GameState } from '../core/gameState.js';
 import { DropItem } from '../entities/dropItem.js';
 import { CONFIG } from '../data/config.js';
 import { UISystem } from '../ui/ui.js';
+import { InventorySystem } from './inventory.js';
 
 export class LootSystem {
+  static roll(enemy) {
+    const table = enemy.base.lootTable;
+    if (!table) return enemy.base.drop && Math.random() <= 0.6 ? [enemy.base.drop] : [];
+    const drops = [...(table.guaranteed || [])];
+    for (const entry of [...(table.common || []), ...(table.rare || [])]) {
+      if (Math.random() <= (entry.chance || 0)) {
+        const minimum = entry.min || 1;
+        const maximum = entry.max || minimum;
+        drops.push({ ...entry.item, quantity: minimum + Math.floor(Math.random() * (maximum - minimum + 1)) });
+      }
+    }
+    return drops;
+  }
+
   static spawnDrop(x, y, item) {
     if (!item) return;
     GameState.drops.push(new DropItem(x, y, item));
@@ -19,8 +34,7 @@ export class LootSystem {
       }
       
       if (Math.hypot(GameState.player.x - drop.x, GameState.player.y - drop.y) < GameState.player.r + drop.r) {
-        if (GameState.inventory.length < CONFIG.INV_MAX_SLOTS) {
-          GameState.inventory.push(drop.item);
+        if (InventorySystem.addItem(drop.item)) {
           UISystem.logMsg(`🎒 Item coletado: ${drop.item.name}`, 'sys');
           UISystem.updateUI();
           GameState.drops.splice(i, 1);

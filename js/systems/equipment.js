@@ -19,13 +19,16 @@ export class EquipmentSystem {
     p.maxHp = p.baseMaxHp;
     p.maxMp = p.baseMaxMp;
     p.def = p.baseDef;
-    p.critChance = CONFIG.BASE_CRIT_CHANCE;
+    p.critChance = p.baseStats?.crit ?? CONFIG.BASE_CRIT_CHANCE;
+    p.speed = p.baseStats?.speed ?? CONFIG.PLAYER_SPEED;
     
     for (const item of Object.values(p.equipment)) {
       if (!item) continue;
       const stats = item.stats || { attack: item.bonusAtk, hp: item.bonusHp };
       p.atk += stats.attack || 0; p.maxHp += stats.hp || 0; p.maxMp += stats.mp || 0; p.def += stats.defense || 0; p.critChance += stats.crit || 0;
     }
+    p.atk += p.temporaryBuffs?.attack || 0;
+    p.def += p.temporaryBuffs?.defense || 0;
     
     if (p.hp > p.maxHp) p.hp = p.maxHp;
     if (p.mp > p.maxMp) p.mp = p.maxMp;

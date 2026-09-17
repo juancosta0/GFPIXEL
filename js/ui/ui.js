@@ -25,6 +25,18 @@ export class UISystem {
     document.getElementById('pLv').textContent = p.lv;
     document.getElementById('pGold').textContent = p.gold;
     document.getElementById('pAtk').textContent = p.atk;
+    p.skillCds.forEach((cooldown, index) => {
+      const slot = document.querySelector(`[data-skill="${index}"]`);
+      if (!slot) return;
+      slot.classList.toggle('on-cooldown', cooldown > 0);
+      let indicator = slot.querySelector('.cooldown');
+      if (!indicator) {
+        indicator = document.createElement('span');
+        indicator.className = 'cooldown';
+        slot.appendChild(indicator);
+      }
+      indicator.textContent = cooldown > 0 ? cooldown.toFixed(1) : '';
+    });
     
     document.getElementById('mMinerals').textContent = p.materials.minerals;
     document.getElementById('mWood').textContent = p.materials.wood;
@@ -44,7 +56,10 @@ export class UISystem {
         const item = GameState.inventory[i];
         const stats = item.stats || { attack: item.bonusAtk, hp: item.bonusHp };
         const statsHtml = stats.attack ? `<br><span class="item-stats">+${stats.attack} Atk</span>` : stats.hp ? `<br><span class="item-stats">+${stats.hp} HP</span>` : '';
-        slot.title = `${item.name}\n${item.description || ''}\nNível ${item.level || 1}`;
+        const equipped = GameState.player.equipment[item.type];
+        const equippedStats = equipped?.stats || {};
+        const comparison = equipped ? `\nAtual: ${equipped.name} | Atk ${equippedStats.attack || 0} -> ${stats.attack || 0} | HP ${equippedStats.hp || 0} -> ${stats.hp || 0}` : '';
+        slot.title = `${item.name}\n${item.description || ''}\nNível ${item.level || 1}${comparison}`;
         slot.innerHTML = `<span class="rarity-${item.rarity || 'common'}">${item.icon || ''} ${item.name}</span>${statsHtml}${item.quantity > 1 ? `<span class="item-stats">x${item.quantity}</span>` : ''}`;
       } else {
         slot.innerHTML = '';
