@@ -22,6 +22,7 @@ export const GameState = {
   },
   
   isTransitioning: false,
+  portalCooldown: 0,
   hitStop: 0,
   projectiles: [],
   projectileEntities: [],

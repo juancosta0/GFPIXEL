@@ -3,13 +3,13 @@ const ring = (type, cx, cy, amount, radius) => Array.from({ length: amount }, (_
 export const SCENES_DB = {
   cidade: {
     id: 'cidade', name: 'Cidade de Ilya', type: 'city', combatAllowed: false, theme: 'town', tileKey: 'tileTown', width: 1680, height: 1200,
-    portals: [{ x: 1580, y: 600, r: 32, color: '#78f3e3', dest: 'planiciesSafael', spawnX: 120, spawnY: 700, text: 'Estrada para Safael' }],
+    portals: [{ x: 1580, y: 600, r: 32, color: '#78f3e3', dest: 'planiciesSafael', spawnX: 260, spawnY: 700, text: 'Estrada para Safael' }],
     spawns: [], npcs: [{ id: 'npc_blacksmith', name: 'Mestre Ferreiro', x: 810, y: 560, r: 20, type: 'crafting', color: '#d18b52', text: 'E - Forjar' }, { id: 'npc_guide', name: 'Guia de Ilya', x: 690, y: 630, r: 18, type: 'dialogue', color: '#7696d6', text: 'E - Falar' }, { id: 'npc_merchant', name: 'Mercadora Nara', x: 930, y: 560, r: 18, type: 'shop', color: '#d9a65a', text: 'E - Comprar' }],
     objects: [{ type: 'fountain', x: 810, y: 760 }, { type: 'chest', x: 610, y: 700 }, { type: 'chest', x: 1030, y: 700 }, { type: 'banner', x: 500, y: 520 }, { type: 'banner', x: 1120, y: 520 }, { type: 'tree', x: 360, y: 420 }, { type: 'tree', x: 1260, y: 420 }, ...ring('lamp', 810, 760, 6, 180), ...ring('flower', 810, 760, 8, 250)]
   },
   planiciesSafael: {
     id: 'planiciesSafael', name: 'Planícies de Safael', type: 'field', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 1900, height: 1350,
-    portals: [{ x: 70, y: 700, r: 32, color: '#78f3e3', dest: 'cidade', spawnX: 1480, spawnY: 600, text: 'Cidade de Ilya' }, { x: 1770, y: 300, r: 32, color: '#a879df', dest: 'cavernaSombria', requires: 'slime_problem_done', spawnX: 120, spawnY: 640, text: 'Caverna Sombria' }],
+    portals: [{ x: 70, y: 700, r: 32, color: '#78f3e3', dest: 'cidade', spawnX: 1480, spawnY: 600, text: 'Cidade de Ilya' }, { x: 1770, y: 300, r: 32, color: '#a879df', dest: 'cavernaSombria', requires: 'slime_problem_done', spawnX: 260, spawnY: 640, text: 'Caverna Sombria' }],
     spawns: [{ enemyId: 'slime_safael', count: 7, area: { x1: 360, y1: 320, x2: 1450, y2: 1020 } }], npcs: [],
     objects: [{ type: 'tree', x: 430, y: 360 }, { type: 'tree', x: 1460, y: 450 }, { type: 'ruin', x: 900, y: 500 }, { type: 'altar', x: 1210, y: 870 }, { type: 'chest', x: 560, y: 940 }, { type: 'crystal', x: 1560, y: 930 }, ...ring('flower', 760, 760, 12, 250), ...ring('mushroom', 1080, 700, 7, 180)]
   },

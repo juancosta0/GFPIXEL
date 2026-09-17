@@ -1,6 +1,7 @@
 import { GameState } from './gameState.js';
 import { SkillSystem } from '../systems/skill.js';
 import { UISystem } from '../ui/ui.js';
+import { ArtPreviewSystem } from '../systems/artPreview.js';
 
 export class InputManager {
   static keys = {}; static pressedThisFrame = {};
@@ -31,7 +32,6 @@ export class InputManager {
         UISystem.logMsg(GameState.debug.enabled ? 'Debug artístico ativado.' : 'Debug artístico desativado.', 'sys');
       }
       if (key === 'f2') {
-        const ArtPreviewSystem = (await import('../systems/artPreview.js')).ArtPreviewSystem;
         ArtPreviewSystem.toggle();
       }
     });

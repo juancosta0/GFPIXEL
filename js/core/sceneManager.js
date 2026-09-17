@@ -21,6 +21,7 @@ export class SceneManager {
       for (const object of GameState.currentScene.objects || []) if (object.type === 'chest' && object.opened === undefined) object.opened = false;
       GameState.player.x = spawnX;
       GameState.player.y = spawnY;
+      GameState.portalCooldown = .9;
       GameState.player.updateState('idle');
       
       Camera.setBounds(GameState.currentScene.width, GameState.currentScene.height);
@@ -57,6 +58,10 @@ export class SceneManager {
 
   static checkPortals() {
     if(!GameState.currentScene || !GameState.currentScene.portals) return;
+    if (GameState.portalCooldown > 0) {
+      GameState.portalCooldown = Math.max(0, GameState.portalCooldown - GameState.deltaTime);
+      return;
+    }
     const pRadius = GameState.player.r;
     for (const p of GameState.currentScene.portals) {
       if (p.requires && !GameState.flags[p.requires]) continue;
