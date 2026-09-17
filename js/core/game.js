@@ -43,8 +43,8 @@ export class Game {
     
     GameState.player = new Player(800, 600);
     GameState.pet = new Pet(800, 600);
-    GameState.inventory = [ITEMS_DB.arco_luar, ITEMS_DB.cajado_aqua, ITEMS_DB.lamina_raiz, ITEMS_DB.tunica_ilya, { ...ITEMS_DB.pocao_luz, quantity: 3 }];
-    GameState.player.equipment.weapon = ITEMS_DB.espada_aprendiz;
+    GameState.inventory = [];
+    GameState.player.equipment.weapon = ITEMS_DB.espada_basica;
     EquipmentSystem.recalcStats();
     SaveSystem.loadGame();
     QuestSystem.init();
