@@ -1,3 +1,5 @@
+import { ART_CONFIG } from '../data/art.js';
+
 export const GameState = {
   player: null,
   pet: null,
@@ -13,6 +15,11 @@ export const GameState = {
   flags: {}, 
   progress: {}, 
   paused: false,
+  debug: {
+    enabled: false,
+    hitboxes: true,
+    anchors: true
+  },
   
   isTransitioning: false,
   hitStop: 0,
@@ -20,8 +27,8 @@ export const GameState = {
   projectileEntities: [],
   hitRegistry: new Set(),
   
-  canvasW: window.innerWidth,
-  canvasH: window.innerHeight,
+  canvasW: ART_CONFIG.baseResolution.width,
+  canvasH: ART_CONFIG.baseResolution.height,
   
   deltaTime: 0,
   elapsed: 0

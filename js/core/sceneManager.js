@@ -16,7 +16,6 @@ export class SceneManager {
     document.getElementById('fadeOverlay').style.opacity = 1;
     setTimeout(() => {
       GameState.currentScene = SCENES_DB[sceneId];
-      if (sceneId === 'cidade' && !GameState.currentScene.portals.some(portal => portal.dest === 'jardimNebuloso')) GameState.currentScene.portals.push({ x: 1500, y: 900, r: 32, color: '#d0ad68', dest: 'jardimNebuloso', spawnX: 100, spawnY: 700, text: 'Jardim Nebuloso' });
       QuestSystem.onEvent('visit', sceneId);
       SaveSystem.saveGame();
       for (const object of GameState.currentScene.objects || []) if (object.type === 'chest' && object.opened === undefined) object.opened = false;
@@ -60,6 +59,7 @@ export class SceneManager {
     if(!GameState.currentScene || !GameState.currentScene.portals) return;
     const pRadius = GameState.player.r;
     for (const p of GameState.currentScene.portals) {
+      if (p.requires && !GameState.flags[p.requires]) continue;
       if (Math.hypot(GameState.player.x - p.x, GameState.player.y - p.y) < pRadius + p.r) {
         this.loadScene(p.dest, p.spawnX, p.spawnY);
       }
@@ -82,6 +82,14 @@ export class SceneManager {
       ctx.globalAlpha = 0.8;
       ctx.fillRect(sx - p.r + 10, sy - 2 + pulse, (p.r - 10) * 2, 4);
       ctx.globalAlpha = 1;
+      if (p.requires && !GameState.flags[p.requires]) {
+        ctx.fillStyle = '#a8a8a8';
+        ctx.globalAlpha = .7;
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillText('Bloqueado', sx, sy - p.r - 12);
+        ctx.globalAlpha = 1;
+        continue;
+      }
       
       ctx.fillStyle = '#fff';
       ctx.font = 'bold 11px sans-serif';
@@ -143,6 +151,28 @@ export class SceneManager {
     }
   }
 
+  static drawLighting(ctx, camera) {
+    const scene = GameState.currentScene;
+    if (!scene || scene.theme !== 'crypt') return;
+    ctx.save();
+    ctx.fillStyle = 'rgba(8, 10, 19, .28)';
+    ctx.fillRect(0, 0, camera.width, camera.height);
+    const lights = (scene.objects || []).filter(object => ['torch', 'crystal', 'altar'].includes(object.type));
+    if (scene.type === 'bossroom') lights.push({ x: 430, y: 360, radius: 180, color: 'rgba(217, 90, 101, .22)' });
+    for (const light of lights) {
+      const sx = light.x - camera.x;
+      const sy = light.y - camera.y - (light.type === 'torch' ? 28 : 0);
+      const radius = light.radius || (light.type === 'crystal' ? 105 : light.type === 'altar' ? 130 : 90);
+      const color = light.color || (light.type === 'torch' ? 'rgba(242, 214, 111, .2)' : 'rgba(120, 243, 227, .18)');
+      const gradient = ctx.createRadialGradient(sx, sy, 2, sx, sy, radius);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath(); ctx.arc(sx, sy, radius, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+  }
+
   static drawForeground(ctx, camera) {
     const scene = GameState.currentScene;
     if (!scene) return;
@@ -160,9 +190,11 @@ export class SceneManager {
     if (!GameState.currentScene || !GameState.currentScene.npcs) return;
     for (const npc of GameState.currentScene.npcs) {
       const sx = npc.x - camera.x;
-      const sy = npc.y - camera.y;
+      const sy = npc.y - camera.y + Math.sin(GameState.elapsed * 2.2 + npc.x) * 1.2;
       
-      SpriteSystem.draw(ctx, 'player', sx, sy, { state: 'idle', frame: 0, size: 42, anchorY: 36 });
+      ctx.fillStyle = 'rgba(10, 18, 26, .32)';
+      ctx.beginPath(); ctx.ellipse(sx, sy + 3, 13, 5, 0, 0, Math.PI * 2); ctx.fill();
+      SpriteSystem.draw(ctx, 'player', sx, sy, { state: 'idle', frame: Math.floor(GameState.elapsed * 3 + npc.x) % 2, size: 42, anchorY: 36 });
       ctx.fillStyle = npc.color;
       ctx.fillRect(sx - 9, sy - 25, 18, 3);
       
@@ -182,6 +214,30 @@ export class SceneManager {
   static drawObject(ctx, type, x, y) {
     const rect = (color, dx, dy, w, h) => { ctx.fillStyle = color; ctx.fillRect(Math.round(x + dx), Math.round(y + dy), w, h); };
     const pulse = .75 + Math.sin(Date.now() / 240 + x) * .25;
+    const imageKeyMap = {
+      tree: 'treeProp',
+      crystal: 'crystalProp',
+      chest: 'chestProp',
+      ruin: 'ruinProp',
+      altar: 'altarProp',
+      fountain: 'fountainProp',
+      torch: 'torchProp',
+      lamp: 'lampProp',
+      banner: 'bannerProp',
+      mushroom: 'flowerProp',
+      flower: 'flowerProp'
+    };
+    const imageKey = imageKeyMap[type];
+    if (imageKey && IMAGES[imageKey]) {
+      const image = IMAGES[imageKey];
+      const size = type === 'tree' ? 54 : type === 'crystal' ? 42 : type === 'fountain' || type === 'altar' ? 52 : type === 'banner' ? 34 : 36;
+      ctx.save();
+      ctx.translate(Math.round(x), Math.round(y));
+      ctx.drawImage(image, -size / 2, -size / 2, size, size);
+      ctx.restore();
+      return;
+    }
+
     if (type === 'tree') {
       rect('#172b2c', -24, -54, 48, 42); rect('#275447', -21, -58, 42, 38); rect('#417a58', -15, -63, 30, 20); rect('#6fa463', -8, -66, 16, 10); rect('#604235', -7, -20, 14, 26); rect('#8a5d43', -3, -25, 6, 28);
     } else if (type === 'crystal') {

@@ -2,10 +2,28 @@ const ring = (type, cx, cy, amount, radius) => Array.from({ length: amount }, (_
 
 export const SCENES_DB = {
   cidade: {
-    id: 'cidade', name: 'Refúgio de Ilya', type: 'city', combatAllowed: false, theme: 'town', tileKey: 'tileTown', width: 1680, height: 1200,
-    portals: [{ x: 1615, y: 600, r: 32, color: '#78f3e3', dest: 'pradariaLunar', spawnX: 130, spawnY: 850, text: 'Pradaria Lunar' }, { x: 300, y: 310, r: 32, color: '#6bcf8b', dest: 'bosqueRaiz', spawnX: 220, spawnY: 930, text: 'Bosque da Raiz' }, { x: 1320, y: 310, r: 32, color: '#a879df', dest: 'criptaAqua', spawnX: 160, spawnY: 860, text: 'Cripta Aqua' }],
+    id: 'cidade', name: 'Cidade de Ilya', type: 'city', combatAllowed: false, theme: 'town', tileKey: 'tileTown', width: 1680, height: 1200,
+    portals: [{ x: 1580, y: 600, r: 32, color: '#78f3e3', dest: 'planiciesSafael', spawnX: 120, spawnY: 700, text: 'Estrada para Safael' }],
     spawns: [], npcs: [{ id: 'npc_blacksmith', name: 'Mestre Ferreiro', x: 810, y: 560, r: 20, type: 'crafting', color: '#d18b52', text: 'E - Forjar' }, { id: 'npc_guide', name: 'Guia de Ilya', x: 690, y: 630, r: 18, type: 'dialogue', color: '#7696d6', text: 'E - Falar' }, { id: 'npc_merchant', name: 'Mercadora Nara', x: 930, y: 560, r: 18, type: 'shop', color: '#d9a65a', text: 'E - Comprar' }],
-    objects: [{ type: 'fountain', x: 810, y: 760 }, { type: 'chest', x: 610, y: 700 }, { type: 'chest', x: 1030, y: 700 }, { type: 'banner', x: 500, y: 520 }, { type: 'banner', x: 1120, y: 520 }, ...ring('lamp', 810, 760, 6, 180)]
+    objects: [{ type: 'fountain', x: 810, y: 760 }, { type: 'chest', x: 610, y: 700 }, { type: 'chest', x: 1030, y: 700 }, { type: 'banner', x: 500, y: 520 }, { type: 'banner', x: 1120, y: 520 }, { type: 'tree', x: 360, y: 420 }, { type: 'tree', x: 1260, y: 420 }, ...ring('lamp', 810, 760, 6, 180), ...ring('flower', 810, 760, 8, 250)]
+  },
+  planiciesSafael: {
+    id: 'planiciesSafael', name: 'Planícies de Safael', type: 'field', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 1900, height: 1350,
+    portals: [{ x: 70, y: 700, r: 32, color: '#78f3e3', dest: 'cidade', spawnX: 1480, spawnY: 600, text: 'Cidade de Ilya' }, { x: 1770, y: 300, r: 32, color: '#a879df', dest: 'cavernaSombria', requires: 'slime_problem_done', spawnX: 120, spawnY: 640, text: 'Caverna Sombria' }],
+    spawns: [{ enemyId: 'slime_safael', count: 7, area: { x1: 360, y1: 320, x2: 1450, y2: 1020 } }], npcs: [],
+    objects: [{ type: 'tree', x: 430, y: 360 }, { type: 'tree', x: 1460, y: 450 }, { type: 'ruin', x: 900, y: 500 }, { type: 'altar', x: 1210, y: 870 }, { type: 'chest', x: 560, y: 940 }, { type: 'crystal', x: 1560, y: 930 }, ...ring('flower', 760, 760, 12, 250), ...ring('mushroom', 1080, 700, 7, 180)]
+  },
+  cavernaSombria: {
+    id: 'cavernaSombria', name: 'Caverna Sombria', type: 'dungeon', combatAllowed: true, theme: 'crypt', tileKey: 'tileCrypt', width: 1500, height: 1100,
+    portals: [{ x: 70, y: 640, r: 32, color: '#a879df', dest: 'planiciesSafael', spawnX: 1650, spawnY: 340, text: 'Planícies de Safael' }, { x: 1380, y: 470, r: 32, color: '#d95a65', dest: 'arenaReiSlime', spawnX: 430, spawnY: 680, text: 'Arena do Rei Slime' }],
+    spawns: [{ enemyId: 'slime_caverna', count: 5, area: { x1: 340, y1: 300, x2: 1120, y2: 850 } }, { enemyId: 'sentinela_osso', count: 2, area: { x1: 800, y1: 380, x2: 1180, y2: 780 } }], npcs: [],
+    objects: [{ type: 'ruin', x: 350, y: 320 }, { type: 'crystal', x: 600, y: 430 }, { type: 'torch', x: 840, y: 300 }, { type: 'torch', x: 1100, y: 740 }, { type: 'altar', x: 1180, y: 480 }, { type: 'crystal', x: 1300, y: 850 }, ...ring('mushroom', 700, 760, 8, 190)]
+  },
+  arenaReiSlime: {
+    id: 'arenaReiSlime', name: 'Arena do Rei Slime Sombrio', type: 'bossroom', combatAllowed: true, theme: 'crypt', tileKey: 'tileCrypt', width: 860, height: 800,
+    portals: [{ x: 430, y: 750, r: 32, color: '#a879df', dest: 'cavernaSombria', spawnX: 1260, spawnY: 470, text: 'Sair da arena' }],
+    spawns: [{ enemyId: 'rei_slime_sombrio', count: 1, area: { x1: 430, y1: 340, x2: 430, y2: 340 } }], npcs: [],
+    objects: [{ type: 'crystal', x: 210, y: 250 }, { type: 'crystal', x: 650, y: 250 }, { type: 'torch', x: 180, y: 430 }, { type: 'torch', x: 680, y: 430 }, { type: 'altar', x: 430, y: 190 }, ...ring('mushroom', 430, 420, 10, 220)]
   },
   jardimNebuloso: {
     id: 'jardimNebuloso', name: 'Jardim Nebuloso', type: 'field', combatAllowed: true, theme: 'meadow', tileKey: 'tileMeadow', width: 1900, height: 1450,

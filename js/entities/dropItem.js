@@ -5,5 +5,6 @@ export class DropItem extends Entity {
     super(x, y, 5);
     this.item = item;
     this.life = 900;
+    this.age = 0;
   }
 }

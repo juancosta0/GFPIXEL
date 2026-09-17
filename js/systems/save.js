@@ -2,7 +2,7 @@ import { GameState } from '../core/gameState.js';
 import { EquipmentSystem } from './equipment.js';
 
 const SAVE_KEY = 'gfpixel-save';
-const SAVE_VERSION = 1;
+const SAVE_VERSION = 2;
 
 export class SaveSystem {
   static newGame() {

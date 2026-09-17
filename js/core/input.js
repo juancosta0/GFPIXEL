@@ -21,9 +21,18 @@ export class InputManager {
     window.addEventListener('keyup', event => { this.keys[event.key.toLowerCase()] = false; });
     window.addEventListener('blur', () => { this.keys = {}; this.pressedThisFrame = {}; });
     window.addEventListener('keydown', event => {
-      if (event.key.toLowerCase() === 'p') {
+      const key = event.key.toLowerCase();
+      if (key === 'p') {
         GameState.paused = !GameState.paused;
         UISystem.logMsg(GameState.paused ? 'Jogo pausado.' : 'Jogo retomado.', 'sys');
+      }
+      if (key === 'f1') {
+        GameState.debug.enabled = !GameState.debug.enabled;
+        UISystem.logMsg(GameState.debug.enabled ? 'Debug artístico ativado.' : 'Debug artístico desativado.', 'sys');
+      }
+      if (key === 'f2') {
+        const ArtPreviewSystem = (await import('../systems/artPreview.js')).ArtPreviewSystem;
+        ArtPreviewSystem.toggle();
       }
     });
   }

@@ -5,9 +5,9 @@ import { SaveSystem } from './save.js';
 
 export const REGIONS = Object.freeze({
   cidade: { recommendedLevel: 1, difficulty: 'safe', rewards: [] },
-  pradariaLunar: { recommendedLevel: 1, difficulty: 'intro', rewards: ['materials'] },
-  bosqueRaiz: { recommendedLevel: 3, difficulty: 'mechanics', rewards: ['equipment'] },
-  criptaAqua: { recommendedLevel: 6, difficulty: 'advanced', rewards: ['rare equipment'] }
+  planiciesSafael: { recommendedLevel: 1, difficulty: 'intro', rewards: ['materials'] },
+  cavernaSombria: { recommendedLevel: 2, difficulty: 'mechanics', rewards: ['equipment'] },
+  arenaReiSlime: { recommendedLevel: 3, difficulty: 'boss', rewards: ['rare equipment'] }
 });
 
 export class ProgressionSystem {

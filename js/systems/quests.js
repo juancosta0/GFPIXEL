@@ -19,12 +19,22 @@ export class QuestSystem {
   }
   static onEvent(type, target, amount = 1) {
     this.init();
+    const completedBefore = new Set(Object.values(GameState.quests).filter(quest => quest.status === 'completed').map(quest => quest.id));
     for (const quest of Object.values(GameState.quests)) {
       if (quest.status !== 'active') continue;
       if (quest.objective.type === type && quest.objective.target === target) quest.progress = Math.min(quest.objective.required, quest.progress + amount);
       if (quest.secondary?.type === type && quest.secondary.target === target) quest.secondaryProgress = Math.min(quest.secondary.required, quest.secondaryProgress + amount);
       if (quest.objective.type === 'visit' && type === 'visit' && quest.objective.target === target) quest.progress = quest.objective.required;
       if (quest.progress >= quest.objective.required && (!quest.secondary || quest.secondaryProgress >= quest.secondary.required)) quest.status = 'completed';
+    }
+    for (const quest of Object.values(GameState.quests)) {
+      if (!completedBefore.has(quest.id) && quest.status === 'completed') {
+        if (quest.id === 'root_investigation') GameState.flags.unlockedDungeon = true;
+        UISystem.logMsg(`Objetivo concluído: ${quest.name}`, 'gold');
+      }
+    }
+    for (const quest of Object.values(GameState.quests)) {
+      if (quest.status === 'locked' && quest.requires && GameState.flags[quest.requires]) quest.status = quest.id === 'king_slime' ? 'active' : 'available';
     }
     this.updateUI();
   }

@@ -35,6 +35,15 @@ export class UISystem {
         document.getElementById('bossFill').style.width = `${Math.max(0, boss.hp / boss.base.maxHp * 100)}%`;
       }
     }
+    const tracker = document.getElementById('questTracker');
+    if (tracker) {
+      const quest = Object.values(GameState.quests || {}).find(item => item.status === 'active' || item.status === 'completed');
+      tracker.hidden = !quest;
+      if (quest) {
+        const secondary = quest.secondary ? ` · ${quest.secondaryProgress}/${quest.secondary.required}` : '';
+        tracker.innerHTML = `<strong>${quest.status === 'completed' ? 'OBJETIVO CONCLUÍDO' : quest.name}</strong><span>${quest.progress}/${quest.objective.required}${secondary}</span>`;
+      }
+    }
     p.skillCds.forEach((cooldown, index) => {
       const slot = document.querySelector(`[data-skill="${index}"]`);
       if (!slot) return;

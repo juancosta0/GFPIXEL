@@ -91,10 +91,90 @@ function rootArt(ctx, frame) { golemArt(ctx, frame); fill(ctx, '#795442', 5, 4, 
 function lichArt(ctx, frame) { wispArt(ctx, frame); fill(ctx, COLORS.violet, 7, 5, 10, 3); fill(ctx, '#e9e2d1', 10, 6, 4, 4); fill(ctx, COLORS.gold, 11, 3, 2, 2); }
 function petArt(ctx, frame) { const bob = frame % 2; fill(ctx, COLORS.ink, 8, 8 + bob, 8, 8); fill(ctx, COLORS.gold, 9, 8 + bob, 6, 6); fill(ctx, '#fff1a5', 10, 9 + bob, 4, 2); fill(ctx, COLORS.glow, 11, 12 + bob, 2, 2); }
 
-const painters = { player: playerArt, slime: slimeArt, wolf: wolfArt, mushroom: mushroomArt, wisp: wispArt, golem: golemArt, slimeQueen: queenArt, rootGuardian: rootArt, cryptLich: lichArt, pet: petArt };
+function swordWeaponArt(ctx, frame) {
+  fill(ctx, COLORS.silver, 12, 1, 2, 20);
+  fill(ctx, COLORS.gold, 10, 4, 6, 2);
+  fill(ctx, COLORS.ink, 11, 1, 4, 2);
+  fill(ctx, '#f0f7ff', 12, 20, 2, 5);
+  fill(ctx, COLORS.silver, 13, 20, 1, 4); fill(ctx, COLORS.ink, 11, 22, 1, 2); fill(ctx, COLORS.ink, 16, 22, 1, 2);
+}
+
+function bowWeaponArt(ctx, frame) {
+  fill(ctx, COLORS.ink, 13, 4, 2, 16);
+  fill(ctx, COLORS.silver, 10, 5, 2, 14); fill(ctx, COLORS.silver, 15, 5, 2, 14);
+  fill(ctx, COLORS.ink, 8, 8, 2, 1); fill(ctx, COLORS.ink, 18, 8, 2, 1);
+  fill(ctx, '#eef8f0', 7, 10, 18, 1); fill(ctx, COLORS.gold, 4, 9, 2, 2); fill(ctx, COLORS.gold, 18, 9, 2, 2);
+}
+
+function staffWeaponArt(ctx, frame) {
+  fill(ctx, COLORS.ink, 14, 1, 2, 18);
+  fill(ctx, '#7b5e4a', 13, 1, 4, 2); fill(ctx, COLORS.gold, 12, 19, 6, 2);
+  fill(ctx, COLORS.glow, 14, 18, 2, 2); fill(ctx, '#d5f9ff', 13, 20, 4, 2);
+}
+
+function arrowProjectileArt(ctx, frame) {
+  fill(ctx, COLORS.ink, 7, 2, 2, 2); fill(ctx, COLORS.gold, 8, 1, 10, 4); fill(ctx, '#f7f9ff', 18, 1, 4, 4); fill(ctx, COLORS.ink, 3, 2, 3, 2);
+}
+
+function magicProjectileArt(ctx, frame) {
+  fill(ctx, COLORS.glow, 3, 2, 18, 4); fill(ctx, '#dffff8', 7, 1, 8, 6); fill(ctx, '#8bbdf9', 9, 0, 4, 8);
+}
+
+function swordIconArt(ctx, frame) { swordWeaponArt(ctx, frame); }
+function bowIconArt(ctx, frame) { bowWeaponArt(ctx, frame); }
+function staffIconArt(ctx, frame) { staffWeaponArt(ctx, frame); }
+function potionIconArt(ctx, frame) {
+  fill(ctx, '#7fe7ff', 11, 2, 6, 20); fill(ctx, '#dffbff', 10, 2, 8, 4); fill(ctx, '#d38a4d', 1, 9, 22, 10); fill(ctx, '#f4e4b9', 6, 12, 12, 6); fill(ctx, '#e8766e', 10, 17, 8, 4);
+}
+
+function treePropArt(ctx, frame) {
+  fill(ctx, '#4e2c1d', 11, 18, 11, 17); fill(ctx, '#2f7a58', 5, 8, 21, 14); fill(ctx, '#3c8f66', 8, 5, 14, 11); fill(ctx, '#dbdca5', 12, 3, 4, 9); fill(ctx, '#d9f0a7', 6, 9, 7, 4); fill(ctx, '#d9f0a7', 17, 9, 7, 4);
+}
+
+function crystalPropArt(ctx, frame) {
+  fill(ctx, '#1d2e3c', 12, 20, 7, 6); fill(ctx, '#76d7d8', 7, 7, 17, 18); fill(ctx, '#d8ffff', 11, 3, 8, 5); fill(ctx, '#a3f0ff', 9, 10, 12, 14);
+}
+
+function chestPropArt(ctx, frame) {
+  fill(ctx, '#3b211a', 4, 12, 22, 11); fill(ctx, '#8b5932', 6, 8, 18, 10); fill(ctx, '#d9a551', 7, 5, 16, 4); fill(ctx, '#f5d18b', 12, 7, 4, 5);
+}
+
+function ruinPropArt(ctx, frame) {
+  fill(ctx, '#2a2e38', 6, 14, 18, 13); fill(ctx, '#606a7f', 2, 6, 6, 18); fill(ctx, '#606a7f', 20, 6, 6, 18); fill(ctx, '#9ab5c7', 8, 2, 13, 6); fill(ctx, '#78f3e3', 13, 10, 4, 9);
+}
+
+function altarPropArt(ctx, frame) {
+  fill(ctx, '#2a2d39', 4, 15, 22, 10); fill(ctx, '#5a5c76', 7, 6, 16, 10); fill(ctx, '#d7d8f4', 10, 3, 10, 4); fill(ctx, '#a879df', 9, 9, 12, 4); fill(ctx, '#eae6ff', 12, 13, 4, 8);
+}
+
+function fountainPropArt(ctx, frame) {
+  fill(ctx, '#2a2d39', 5, 13, 20, 10); fill(ctx, '#5d7185', 8, 5, 14, 9); fill(ctx, '#78f3e3', 9, 2, 12, 5); fill(ctx, '#dffdfc', 11, 0, 8, 4);
+}
+
+function torchPropArt(ctx, frame) {
+  fill(ctx, '#2a2d39', 12, 10, 6, 15); fill(ctx, '#596a76', 9, 7, 12, 4); fill(ctx, '#82ecff', 11, 2, 8, 7); fill(ctx, '#fff5c3', 13, 3, 4, 4);
+}
+
+function bannerPropArt(ctx, frame) {
+  fill(ctx, '#2d2b35', 12, 1, 4, 22); fill(ctx, '#d9a856', 1, 6, 20, 5); fill(ctx, '#5a76c9', 4, 11, 14, 9); fill(ctx, '#deebff', 10, 14, 4, 5);
+}
+
+function flowerPropArt(ctx, frame) {
+  fill(ctx, '#3d7d5d', 11, 16, 6, 10); fill(ctx, '#db7dcf', 5, 9, 5, 5); fill(ctx, '#db7dcf', 17, 9, 5, 5); fill(ctx, '#ffd85b', 11, 4, 6, 6); fill(ctx, '#f8f3b8', 13, 6, 2, 2);
+}
+
+function lampPropArt(ctx, frame) {
+  fill(ctx, '#2d2d38', 11, 16, 8, 8); fill(ctx, '#a2b2b8', 8, 8, 14, 10); fill(ctx, '#f2d66f', 11, 3, 8, 8); fill(ctx, '#fff7c7', 13, 5, 4, 4);
+}
+
+const painters = { player: playerArt, slime: slimeArt, wolf: wolfArt, mushroom: mushroomArt, wisp: wispArt, golem: golemArt, slimeQueen: queenArt, rootGuardian: rootArt, cryptLich: lichArt, pet: petArt, swordWeapon: swordWeaponArt, bowWeapon: bowWeaponArt, staffWeapon: staffWeaponArt, arrowProjectile: arrowProjectileArt, magicProjectile: magicProjectileArt, swordIcon: swordIconArt, bowIcon: bowIconArt, staffIcon: staffIconArt, potionIcon: potionIconArt, treeProp: treePropArt, crystalProp: crystalPropArt, chestProp: chestPropArt, ruinProp: ruinPropArt, altarProp: altarPropArt, fountainProp: fountainPropArt, torchProp: torchPropArt, bannerProp: bannerPropArt, flowerProp: flowerPropArt, lampProp: lampPropArt };
 export const ASSETS_DB = {
   player: sheet(6, playerArt), slime: sheet(4, slimeArt), wolf: sheet(4, wolfArt), mushroom: sheet(4, mushroomArt),
   wisp: sheet(4, wispArt), golem: sheet(4, golemArt), slimeQueen: sheet(4, queenArt), rootGuardian: sheet(4, rootArt), cryptLich: sheet(4, lichArt), pet: sheet(3, petArt),
+  swordWeapon: sheet(1, swordWeaponArt), bowWeapon: sheet(1, bowWeaponArt), staffWeapon: sheet(1, staffWeaponArt),
+  arrowProjectile: sheet(1, arrowProjectileArt), magicProjectile: sheet(1, magicProjectileArt),
+  swordIcon: sheet(1, swordIconArt), bowIcon: sheet(1, bowIconArt), staffIcon: sheet(1, staffIconArt), potionIcon: sheet(1, potionIconArt),
+  treeProp: sheet(1, treePropArt), crystalProp: sheet(1, crystalPropArt), chestProp: sheet(1, chestPropArt), ruinProp: sheet(1, ruinPropArt), altarProp: sheet(1, altarPropArt), fountainProp: sheet(1, fountainPropArt), torchProp: sheet(1, torchPropArt), bannerProp: sheet(1, bannerPropArt), flowerProp: sheet(1, flowerPropArt), lampProp: sheet(1, lampPropArt),
   tileMeadow: tile('#466d58', ['#598061', '#355849', '#7b8959'], 3), tileForest: tile('#294d47', ['#386a5a', '#1d3937', '#587657'], 7),
   tileCrypt: tile('#3e3e4a', ['#50515e', '#2c3038', '#60616c'], 11), tileTown: tile('#6a6258', ['#817767', '#514b47', '#978a70'], 17)
 };

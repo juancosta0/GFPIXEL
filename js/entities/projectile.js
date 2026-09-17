@@ -1,6 +1,7 @@
 import { CombatSystem } from '../systems/combat.js';
 import { ParticleEffectsSystem } from '../systems/particleEffects.js';
 import { VFXSystem } from '../systems/vfx.js';
+import { IMAGES } from '../data/assets.js';
 
 export class Projectile {
   constructor({ x, y, angle, speed, damage, owner, type, lifetime, collisionRadius = 8 }) {
@@ -32,8 +33,13 @@ export class Projectile {
     }
     ctx.globalAlpha = 1;
     const x = this.x - camera.x, y = this.y - camera.y;
+    const assetKey = this.type === 'arrow' ? 'arrowProjectile' : 'magicProjectile';
+    const image = IMAGES[assetKey];
     ctx.save(); ctx.translate(x, y); ctx.rotate(this.rotation);
-    if (this.type === 'arrow') {
+    if (image && image.complete) {
+      const size = this.type === 'arrow' ? 24 : 20;
+      ctx.drawImage(image, -size / 2, -size / 2, size, size);
+    } else if (this.type === 'arrow') {
       ctx.fillStyle = '#e7b65c'; ctx.fillRect(-12, -1, 20, 2);
       ctx.fillStyle = '#eef8f0'; ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(4, -4); ctx.lineTo(4, 4); ctx.closePath(); ctx.fill();
     } else {

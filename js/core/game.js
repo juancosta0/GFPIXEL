@@ -16,6 +16,10 @@ import { CombatSystem } from '../systems/combat.js';
 import { QuestSystem } from '../systems/quests.js';
 import { SaveSystem } from '../systems/save.js';
 import { VFXSystem } from '../systems/vfx.js';
+import { ART_CONFIG } from '../data/art.js';
+import { AssetManager } from '../systems/assetManager.js';
+import { DebugRenderer } from '../systems/debugRenderer.js';
+import { ArtPreviewSystem } from '../systems/artPreview.js';
 
 export class Game {
   static saveTimer = 0;
@@ -24,12 +28,18 @@ export class Game {
     if (launchNotice) launchNotice.remove();
     this.canvas = document.getElementById('game');
     this.ctx = this.canvas.getContext('2d');
-    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = ART_CONFIG.imageSmoothing;
+    AssetManager.initialize();
+    ArtPreviewSystem.init();
     
     InputManager.init();
     UISystem.init();
     
-    Camera.init(window.innerWidth, window.innerHeight);
+    const baseWidth = ART_CONFIG.baseResolution.width;
+    const baseHeight = ART_CONFIG.baseResolution.height;
+    GameState.canvasW = baseWidth;
+    GameState.canvasH = baseHeight;
+    Camera.init(baseWidth, baseHeight);
     
     GameState.player = new Player(800, 600);
     GameState.pet = new Pet(800, 600);
@@ -41,11 +51,11 @@ export class Game {
     QuestSystem.updateUI();
     
     window.addEventListener('resize', () => {
-      GameState.canvasW = window.innerWidth;
-      GameState.canvasH = window.innerHeight;
+      GameState.canvasW = ART_CONFIG.baseResolution.width;
+      GameState.canvasH = ART_CONFIG.baseResolution.height;
       this.canvas.width = GameState.canvasW;
       this.canvas.height = GameState.canvasH;
-      this.ctx.imageSmoothingEnabled = false;
+      this.ctx.imageSmoothingEnabled = ART_CONFIG.imageSmoothing;
       Camera.resize(GameState.canvasW, GameState.canvasH);
     });
     
@@ -108,6 +118,7 @@ export class Game {
     
     // 2. Map objects (trees, etc) behind entities
     SceneManager.drawObjects(ctx, Camera);
+    SceneManager.drawLighting(ctx, Camera);
     
     // 3. Portals
     SceneManager.drawPortals(ctx, Camera);
@@ -140,9 +151,11 @@ export class Game {
     ParticleEffectsSystem.draw(ctx, Camera);
     VFXSystem.draw(ctx, Camera);
     CombatSystem.draw(ctx, Camera);
+    DebugRenderer.draw(ctx, Camera);
     ctx.restore();
     
     // 8. HUD (screen-space, independent of camera)
     UISystem.updateHUD();
+    ArtPreviewSystem.draw();
   }
 }
