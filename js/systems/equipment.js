@@ -4,6 +4,7 @@ import { CONFIG } from '../data/config.js';
 
 export class EquipmentSystem {
   static unequipItem(type) {
+    if (GameState.player.state.includes('attack') || GameState.player.state.includes('cast')) return;
     const item = GameState.player.equipment[type];
     if (!item || GameState.inventory.length >= CONFIG.INV_MAX_SLOTS) return;
     

@@ -32,7 +32,9 @@ export class SceneManager {
       
       GameState.damageTexts = [];
       GameState.effects = [];
+      GameState.vfx = [];
       GameState.projectiles = [];
+      GameState.projectileEntities = [];
       GameState.hitRegistry = new Set();
       GameState.drops = [];
       GameState.enemies = [];
@@ -117,6 +119,10 @@ export class SceneManager {
         if (tileImg) {
           ctx.drawImage(tileImg, sx, sy, tileSize, tileSize);
         }
+        if ((c * 7 + r * 11) % 9 === 0) {
+          ctx.fillStyle = scene.theme === 'crypt' ? 'rgba(120,243,227,.08)' : 'rgba(255,235,170,.07)';
+          ctx.fillRect(sx + 7, sy + 8, 2, 2);
+        }
       }
     }
     
@@ -134,6 +140,19 @@ export class SceneManager {
       const sy = Math.round(obj.y - camera.y);
       
       this.drawObject(ctx, obj.type, sx, sy);
+    }
+  }
+
+  static drawForeground(ctx, camera) {
+    const scene = GameState.currentScene;
+    if (!scene) return;
+    for (const obj of scene.objects || []) {
+      if (obj.type !== 'tree' || !camera.isVisible(obj.x, obj.y)) continue;
+      const sx = obj.x - camera.x, sy = obj.y - camera.y;
+      ctx.globalAlpha = .78;
+      ctx.fillStyle = '#39705d';
+      ctx.beginPath(); ctx.arc(sx - 12, sy - 46, 18, 0, Math.PI * 2); ctx.arc(sx + 10, sy - 52, 22, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
     }
   }
 
@@ -162,10 +181,11 @@ export class SceneManager {
 
   static drawObject(ctx, type, x, y) {
     const rect = (color, dx, dy, w, h) => { ctx.fillStyle = color; ctx.fillRect(Math.round(x + dx), Math.round(y + dy), w, h); };
+    const pulse = .75 + Math.sin(Date.now() / 240 + x) * .25;
     if (type === 'tree') {
       rect('#172b2c', -24, -54, 48, 42); rect('#275447', -21, -58, 42, 38); rect('#417a58', -15, -63, 30, 20); rect('#6fa463', -8, -66, 16, 10); rect('#604235', -7, -20, 14, 26); rect('#8a5d43', -3, -25, 6, 28);
     } else if (type === 'crystal') {
-      rect('#152938', -16, -9, 32, 10); rect('#2e7190', -10, -40, 20, 32); rect('#78f3e3', -6, -48, 12, 36); rect('#d0fffb', -2, -40, 4, 24);
+      rect('#152938', -16, -9, 32, 10); rect('#2e7190', -10, -40, 20, 32); ctx.shadowColor = '#78f3e3'; ctx.shadowBlur = 10 * pulse; rect('#78f3e3', -6, -48, 12, 36); ctx.shadowBlur = 0; rect('#d0fffb', -2, -40, 4, 24);
     } else if (type === 'chest') {
       rect('#251b1d', -18, -14, 36, 22); rect('#875237', -15, -12, 30, 17); rect('#d9994d', -15, -8, 30, 3); rect('#e5bd60', -3, -5, 6, 8);
     } else if (type === 'ruin') {
@@ -173,7 +193,7 @@ export class SceneManager {
     } else if (type === 'altar' || type === 'fountain') {
       rect('#252937', -34, -15, 68, 20); rect('#4c5861', -28, -27, 56, 17); rect('#7f9295', -20, -33, 40, 8); rect(type === 'fountain' ? '#78f3e3' : '#a879df', -12, -25, 24, 6); rect('#c9dad2', -4, -52, 8, 21);
     } else if (type === 'torch' || type === 'lamp') {
-      rect('#202633', -4, -28, 8, 30); rect('#59646b', -7, -31, 14, 7); rect('#78f3e3', -4, -39, 8, 10); rect('#dffff8', -2, -43, 4, 6);
+      rect('#202633', -4, -28, 8, 30); rect('#59646b', -7, -31, 14, 7); ctx.shadowColor = '#78f3e3'; ctx.shadowBlur = 14 * pulse; rect('#78f3e3', -4, -39, 8, 10); rect('#dffff8', -2, -43, 4, 6); ctx.shadowBlur = 0;
     } else if (type === 'banner') {
       rect('#25242f', -3, -44, 6, 45); rect('#d7aa55', -12, -41, 24, 5); rect('#5a76c9', -10, -36, 20, 20); rect('#d8eaff', -3, -32, 6, 8);
     } else if (type === 'mushroom') {

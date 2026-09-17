@@ -7,6 +7,7 @@ export const GameState = {
   enemies: [],
   drops: [],
   effects: [],
+  vfx: [],
   damageTexts: [],
   quests: [],
   flags: {}, 
@@ -16,6 +17,7 @@ export const GameState = {
   isTransitioning: false,
   hitStop: 0,
   projectiles: [],
+  projectileEntities: [],
   hitRegistry: new Set(),
   
   canvasW: window.innerWidth,

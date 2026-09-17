@@ -1,4 +1,4 @@
-* { margin:0; padding:0; box-sizing:border-box; font-family:ui-monospace, 'Cascadia Code', monospace; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:Georgia, 'Times New Roman', serif; }
 body { margin:0; overflow:hidden; background:#081215; color:#e7eadf; }
 
 #gameWrap { position:relative; width:100vw; height:100vh; }
@@ -26,23 +26,23 @@ kbd { padding:2px 5px; color:#20172f; background:#f2c14e; border:2px solid #fff0
 /* ===== TOPBAR ===== */
 #topbar {
   position:absolute; top:0; left:50%; transform:translateX(-50%); width:min(720px, calc(100vw - 12px));
-  background:linear-gradient(#193238, #0c1c20); padding:8px 16px;
+  background:linear-gradient(135deg, rgba(31,57,61,.97), rgba(10,27,34,.97)); padding:8px 16px;
   display:flex; justify-content:space-between; align-items:center; 
   border:3px solid #d2aa59; border-top:none; border-radius:0; font-size:12px; z-index:10;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.6);
+  box-shadow: 0 5px 0 rgba(3,10,13,.8), inset 0 -2px 0 rgba(255,226,138,.2), inset 0 0 18px rgba(184,145,65,.12);
 }
 .status-group { display:flex; gap:14px; align-items:center; }
 .bar { width:110px; height:12px; background:#071013; border-radius:0; overflow:hidden; border:2px solid #45696b; }
-.bar > div { height:100%; transition:width .2s; }
-#hpFill { background:linear-gradient(#e27276, #a93e50); width:100%; }
-#mpFill { background:linear-gradient(#78e7e2, #277b8b); width:100%; }
-#expFill { background:linear-gradient(#f4dc84, #ba793e); width:0%; }
+.bar > div { height:100%; transition:width .25s ease-out, filter .25s ease; }
+#hpFill { background:linear-gradient(#e27276, #a93e50); width:100%; box-shadow:0 0 10px rgba(226,114,118,.45); }
+#mpFill { background:linear-gradient(#78e7e2, #277b8b); width:100%; box-shadow:0 0 10px rgba(120,231,226,.35); }
+#expFill { background:linear-gradient(#f4dc84, #ba793e); width:0%; box-shadow:0 0 10px rgba(244,220,132,.35); }
 
 /* ===== SPRITE PANEL ===== */
 #spritePanel {
   position:absolute; top:20px; right:20px; background:rgba(10, 28, 31, 0.95);
   border:3px solid #7a9e91; border-radius:0; padding:12px; width:220px; z-index:10;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+  box-shadow: 0 8px 18px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,239,168,.15), inset 0 0 14px rgba(122,158,145,.14);
 }
 #spritePanel h3 { font-size:14px; text-align:center; margin-bottom:8px; color:#f1d17a; }
 .material-counter { font-size:11px; margin-bottom:4px; color:#a1a1aa; display:flex; justify-content:space-between; }
@@ -74,7 +74,7 @@ kbd { padding:2px 5px; color:#20172f; background:#f2c14e; border:2px solid #fff0
 /* ===== LOG ===== */
 #log {
   position:absolute; bottom:20px; left:20px; width:340px; height:120px;
-  background:rgba(7, 19, 22, 0.9); border:2px solid #45696b; border-radius:0;
+  background:linear-gradient(160deg, rgba(12,32,36,.94), rgba(6,17,22,.94)); border:2px solid #45696b; border-radius:4px;
   padding:6px 10px; overflow-y:auto; font-size:11px; color:#a1a1aa; z-index:10; pointer-events:none;
 }
 #log .dmg { color:#ff8080; } 
@@ -114,6 +114,7 @@ kbd { padding:2px 5px; color:#20172f; background:#f2c14e; border:2px solid #fff0
 .rarity-uncommon { color: #70d6a2; font-weight: bold; }
 .rarity-rare { color: #3498db; font-weight: bold; }
 .rarity-epic { color: #9b59b6; font-weight: bold; text-shadow: 0 0 3px #8e44ad; }
+.rarity-legendary { color:#ffe28a; font-weight:bold; text-shadow:0 0 5px #d98c4e; }
 
 @media (max-width: 760px) {
   #topbar { padding:6px 8px; font-size:9px; }

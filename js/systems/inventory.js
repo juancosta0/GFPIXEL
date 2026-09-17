@@ -14,6 +14,7 @@ export class InventorySystem {
     return true;
   }
   static useItem(index) {
+    if (GameState.player.state.includes('attack') || GameState.player.state.includes('cast')) return;
     const item = GameState.inventory[index];
     if (!item || item.type === 'material') return;
     if (item.type === 'consumable') {

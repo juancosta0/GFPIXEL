@@ -11,6 +11,7 @@ import { EnemyAISystem, AI_STATES } from '../systems/ai.js';
 import { ProgressionSystem } from '../systems/progression.js';
 import { QuestSystem } from '../systems/quests.js';
 import { SaveSystem } from '../systems/save.js';
+import { VFXSystem } from '../systems/vfx.js';
 
 let nextEnemyId = 1;
 
@@ -39,6 +40,7 @@ export class Enemy extends Entity {
     this.behaviorType = base.behaviorType || (base.type === 'boss' ? 'boss' : 'aggressive');
     this.wasAttacked = false;
     this.bossPhase = 1;
+    this.previousBossPhase = 1;
     this.specialCooldown = 4;
     this.specialPending = false;
     this.telegraphTimer = 0;
@@ -129,6 +131,11 @@ export class Enemy extends Entity {
   updateBossSpecial(dt, player, distance) {
     if (this.base.type !== 'boss') return;
     this.bossPhase = this.hp <= this.base.maxHp * .33 ? 3 : this.hp <= this.base.maxHp * .66 ? 2 : 1;
+    if (this.bossPhase !== this.previousBossPhase) {
+      this.previousBossPhase = this.bossPhase;
+      UISystem.logMsg(`${this.base.name} entrou na fase ${this.bossPhase}!`, 'dmg');
+      VFXSystem.bossPhase(this.x, this.y);
+    }
     if (this.telegraphTimer > 0) {
       this.telegraphTimer -= dt;
       if (this.telegraphTimer <= 0) {
@@ -156,10 +163,11 @@ export class Enemy extends Entity {
     if (!this.alive) return;
     const sx = this.x - camera.x;
     const sy = this.y - camera.y;
+    const bob = this.base.type === 'boss' ? Math.sin(GameState.elapsed * 2) * 2 : this.base.spriteKey === 'slime' ? Math.sin(GameState.elapsed * 5) * 2 : 0;
     
     const offset = this.base.size * 0.82;
     
-    SpriteSystem.draw(ctx, this.base.spriteKey, sx, sy, { state: this.state, frame: this.frameIndex, facing: this.facing, size: this.base.size, anchorY: this.base.size * 0.82 });
+    SpriteSystem.draw(ctx, this.base.spriteKey, sx, sy + bob, { state: this.state, frame: this.frameIndex, facing: this.facing, size: this.base.size, anchorY: this.base.size * 0.82 });
 
     if (this.telegraphTimer > 0) {
       ctx.globalAlpha = .35 + Math.sin(this.telegraphTimer * 18) * .1;
@@ -169,6 +177,11 @@ export class Enemy extends Entity {
       ctx.arc(sx, sy, this.specialRadius, 0, Math.PI * 2);
       ctx.stroke();
       ctx.globalAlpha = 1;
+    }
+    if (this.base.type === 'boss') {
+      ctx.globalAlpha = .18 + this.bossPhase * .04;
+      ctx.fillStyle = this.bossPhase === 3 ? '#d95a65' : '#78f3e3';
+      ctx.beginPath(); ctx.arc(sx, sy + bob - offset / 2, offset * .8, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
     }
     
     ctx.fillStyle = '#fff';

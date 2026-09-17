@@ -15,6 +15,7 @@ import { EquipmentSystem } from '../systems/equipment.js';
 import { CombatSystem } from '../systems/combat.js';
 import { QuestSystem } from '../systems/quests.js';
 import { SaveSystem } from '../systems/save.js';
+import { VFXSystem } from '../systems/vfx.js';
 
 export class Game {
   static saveTimer = 0;
@@ -77,6 +78,7 @@ export class Game {
     UISystem.updateSpritePanel();
     
     Camera.follow(GameState.player, dt);
+    Camera.update(dt);
     
     SceneManager.checkPortals();
     SpriteSystem.update(dt);
@@ -91,12 +93,15 @@ export class Game {
     
     LootSystem.update(dt);
     ParticleEffectsSystem.update(dt);
+    VFXSystem.update(dt);
   }
 
   static draw() {
     const ctx = this.ctx;
     
     ctx.clearRect(0, 0, GameState.canvasW, GameState.canvasH);
+    ctx.save();
+    ctx.translate(Camera.shakeX, Camera.shakeY);
     
     // 1. Map background, tiles, border
     SceneManager.drawMap(ctx, Camera);
@@ -129,10 +134,13 @@ export class Game {
         ent.draw(ctx, Camera);
       }
     }
+    SceneManager.drawForeground(ctx, Camera);
     
     // 7. Effects on top
     ParticleEffectsSystem.draw(ctx, Camera);
+    VFXSystem.draw(ctx, Camera);
     CombatSystem.draw(ctx, Camera);
+    ctx.restore();
     
     // 8. HUD (screen-space, independent of camera)
     UISystem.updateHUD();
