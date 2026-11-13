@@ -30,6 +30,18 @@ export class EquipmentSystem {
     }
     p.atk += p.temporaryBuffs?.attack || 0;
     p.def += p.temporaryBuffs?.defense || 0;
+
+    // Bônus da Especialização Companheiro do Sprite Ativo
+    const pet = GameState.pet;
+    if (pet && pet.state === 'following' && pet.getCompanionBonuses) {
+      const comp = pet.getCompanionBonuses();
+      p.maxHp = Math.round(p.maxHp * (1 + (comp.hpMult || 0)));
+      p.maxMp = Math.round(p.maxMp * (1 + (comp.mpMult || 0)));
+      p.def += comp.defBonus || 0;
+      p.critChance += comp.critBonus || 0;
+      p.speed += Math.round(CONFIG.PLAYER_SPEED * (comp.speedBonus || 0));
+      p.atk += comp.atkBonus || 0;
+    }
     
     if (p.hp > p.maxHp) p.hp = p.maxHp;
     if (p.mp > p.maxMp) p.mp = p.maxMp;

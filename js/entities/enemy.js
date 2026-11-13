@@ -55,7 +55,20 @@ export class Enemy extends Entity {
     this.updateState(AI_STATES.DEAD);
     this.respawnTimer = this.base.respawnTime;
     
-    const g = Math.floor(Math.random() * (this.base.gold[1] - this.base.gold[0])) + this.base.gold[0];
+    let g = Math.floor(Math.random() * (this.base.gold[1] - this.base.gold[0])) + this.base.gold[0];
+    const pet = GameState.pet;
+    if (pet && pet.state === 'following') {
+      const expBonuses = pet.getExplorerBonuses ? pet.getExplorerBonuses() : null;
+      if (expBonuses?.playerGoldMult) {
+        g = Math.round(g * (1 + expBonuses.playerGoldMult));
+      }
+      pet.addExperience(Math.max(4, Math.round(this.base.exp * 0.35)));
+      const comp = pet.getCompanionBonuses ? pet.getCompanionBonuses() : null;
+      if (comp?.healOnKill && GameState.player.hp < GameState.player.maxHp) {
+        GameState.player.hp = Math.min(GameState.player.maxHp, GameState.player.hp + comp.healOnKill);
+        ParticleEffectsSystem.addDamageText(GameState.player.x, GameState.player.y - 40, `+${comp.healOnKill} HP`, '#7ef0b2');
+      }
+    }
     GameState.player.gold += g;
     ProgressionSystem.addExperience(GameState.player, this.base.exp);
     QuestSystem.onEvent('kill', this.enemyDbId);

@@ -5,5 +5,8 @@ export const ITEMS_DB = {
   cajado_aqua: { id: 'cajado_aqua', name: 'Cajado Aqua', description: 'Canaliza um projétil de maré arcana.', type: 'weapon', weaponStyle: 'staff', visual: { sprite: 'staff', palette: 'aqua' }, rarity: 'rare', level: 3, stats: { attack: 11, mp: 20 }, icon: '✦', stackable: false, sellPrice: 55 },
   lamina_raiz: { id: 'lamina_raiz', name: 'Lâmina da Raiz', description: 'Uma espada viva que desfere um arco amplo.', type: 'weapon', weaponStyle: 'greatsword', rarity: 'rare', level: 4, stats: { attack: 14, crit: 0.04 }, icon: '🗡', stackable: false, sellPrice: 80 },
   tunica_ilya: { id: 'tunica_ilya', name: 'Túnica de Ilya', description: 'Proteção de viagem leve.', type: 'armor', rarity: 'common', level: 1, stats: { hp: 25, defense: 2 }, icon: '🛡', stackable: false, sellPrice: 12 },
-  pocao_luz: { id: 'pocao_luz', name: 'Poção de Luz', description: 'Restaura 45 HP.', type: 'consumable', rarity: 'common', level: 1, stats: { heal: 45 }, icon: '🧪', stackable: true, sellPrice: 4 }
+  pocao_luz: { id: 'pocao_luz', name: 'Poção de Luz', description: 'Restaura 45 HP.', type: 'consumable', rarity: 'common', level: 1, stats: { heal: 45 }, icon: '🧪', stackable: true, sellPrice: 4 },
+  cristal_arcano: { id: 'cristal_arcano', name: 'Cristal Arcano', description: 'Gema reluzente repleta de energia mágica encontrada por Sprites exploradores.', type: 'material', rarity: 'rare', level: 2, icon: '💎', stackable: true, sellPrice: 35 },
+  pepita_ouro: { id: 'pepita_ouro', name: 'Pepita de Ouro Puro', description: 'Mineral nobre escavado das profundezas.', type: 'material', rarity: 'rare', level: 2, icon: '🪙', stackable: true, sellPrice: 50 },
+  essencia_safael: { id: 'essencia_safael', name: 'Essência de Safael', description: 'Substância pura e brilhante recolhida em locais místicos.', type: 'material', rarity: 'epic', level: 3, icon: '✨', stackable: true, sellPrice: 90 }
 };

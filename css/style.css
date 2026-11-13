@@ -45,7 +45,135 @@ kbd { padding:2px 5px; color:#20172f; background:#f2c14e; border:2px solid #fff0
   box-shadow: 0 8px 18px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,239,168,.15), inset 0 0 14px rgba(122,158,145,.14);
 }
 #spritePanel h3 { font-size:14px; text-align:center; margin-bottom:8px; color:#f1d17a; }
-.material-counter { font-size:11px; margin-bottom:4px; color:#a1a1aa; display:flex; justify-content:space-between; }
+.sprite-quick-actions { display: flex; gap: 4px; margin: 6px 0; }
+.sprite-mini-btn {
+  flex: 1; padding: 4px 2px; background: #132f33; border: 1px solid #45696b; color: #fff;
+  cursor: pointer; font-size: 13px; text-align: center;
+}
+.sprite-mini-btn:hover { background: #285153; border-color: #f1d17a; }
+.primary-highlight {
+  background: linear-gradient(#936f21, #573f0c) !important;
+  border-color: #f1d17a !important; color: #fff9e6 !important; font-weight: bold;
+}
+.primary-highlight:hover { background: linear-gradient(#b88b2a, #6e5010) !important; }
+
+/* ===== SPRITE MANAGER MODAL DIALOG ===== */
+dialog.sprite-modal:modal {
+  overscroll-behavior: contain;
+}
+dialog.sprite-modal::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(4, 10, 14, 0.78);
+  backdrop-filter: blur(2px);
+}
+dialog.sprite-modal[open] {
+  position: fixed; inset: 0; margin: auto;
+  width: min(880px, 95vw); height: min(620px, 92vh);
+  background: linear-gradient(150deg, #0e272c, #061518);
+  border: 3px solid #d2aa59;
+  box-shadow: 0 14px 35px rgba(0,0,0,0.88), inset 0 0 18px rgba(122,158,145,0.18);
+  color: #edf5e6; padding: 0; z-index: 150;
+  display: flex; flex-direction: column;
+}
+.sm-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 14px; background: rgba(5, 17, 20, 0.95);
+  border-bottom: 2px solid #d2aa59;
+}
+.sm-header h2 { font-size: 15px; margin: 0; color: #f1d17a; display: flex; align-items: center; }
+.sm-header-badges { display: flex; gap: 6px; margin-top: 4px; flex-wrap: wrap; }
+.sm-badge {
+  font-size: 9px; padding: 1px 6px; border: 1px solid; border-radius: 2px;
+  background: rgba(0, 0, 0, 0.35); text-transform: uppercase; letter-spacing: 0.4px;
+}
+.sm-close-btn {
+  background: #2a1114; border: 1px solid #d95a65; color: #ff8080;
+  font-size: 13px; width: 26px; height: 26px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.sm-close-btn:hover { background: #4a191f; color: #fff; }
+
+.sm-tabs {
+  display: flex; background: #071518; border-bottom: 2px solid #365053; overflow-x: auto;
+}
+.sm-tab-btn {
+  padding: 9px 14px; background: transparent; border: none;
+  border-bottom: 3px solid transparent; color: #9bb1ab; cursor: pointer;
+  font-size: 11px; white-space: nowrap; transition: color .15s, border .15s;
+}
+.sm-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.04); }
+.sm-tab-btn.active {
+  color: #f1d17a; border-bottom-color: #f1d17a; background: rgba(241, 209, 122, 0.08); font-weight: bold;
+}
+.sm-body {
+  flex: 1; padding: 12px; overflow-y: auto;
+}
+
+/* Card & Grids */
+.sm-card {
+  background: rgba(10, 28, 31, 0.9); border: 2px solid #45696b;
+  padding: 10px; box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
+}
+.sm-overview-grid {
+  display: grid; grid-template-columns: 240px 1fr; gap: 12px;
+}
+.sm-avatar-card { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.sm-avatar-preview {
+  width: 100%; height: 90px; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; border: 1px solid #45696b;
+}
+.sm-tier-tag { font-size: 9px; color: #f1d17a; margin-top: 4px; }
+.sm-button-group { width: 100%; display: flex; flex-direction: column; gap: 5px; margin-top: auto; }
+
+.sm-stat-bar-group { margin-bottom: 8px; }
+.sm-bar-label { display: flex; justify-content: space-between; font-size: 10px; color: #c5d8d1; margin-bottom: 2px; }
+.sm-full-col { grid-column: 1 / -1; }
+.sm-bonus-box {
+  background: #08171a; border: 1px solid #365053; padding: 5px 8px;
+  color: #d4d4d8; font-size: 10px;
+}
+.sm-bonus-box b { color: #78f3e3; font-size: 11px; }
+
+/* Skill Tree */
+.sm-branches-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.sm-branch-col {
+  background: rgba(8, 22, 25, 0.85); border: 2px solid #365053; padding: 8px;
+  display: flex; flex-direction: column;
+}
+.sm-branch-header {
+  border-bottom: 1px solid #45696b; padding-bottom: 4px; margin-bottom: 8px; text-align: center;
+}
+.sm-branch-header h4 { font-size: 12px; color: #f1d17a; }
+.sm-skills-list { display: flex; flex-direction: column; gap: 6px; }
+.sm-skill-card {
+  background: #0e2428; border: 1px solid #45696b; padding: 6px;
+  font-size: 10px; transition: border-color .15s;
+}
+.sm-skill-card.learned { border-color: #78f3e3; background: #102e33; }
+.sm-skill-card.locked { opacity: 0.6; }
+.sm-skill-tier { font-size: 8px; background: #1f393d; padding: 1px 4px; border: 1px solid #45696b; }
+.sm-btn-upgrade {
+  background: #183a3c; border: 1px solid #f1d17a; color: #f1d17a;
+  padding: 2px 6px; font-size: 9px; cursor: pointer;
+}
+.sm-btn-upgrade:hover { background: #285153; color: #fff; }
+.sm-btn-upgrade:disabled { opacity: 0.4; cursor: not-allowed; border-color: #555; color: #777; }
+
+/* Foods & Expeditions */
+.sm-food-card, .sm-expedition-card, .sm-roster-card, .sm-adopt-card {
+  background: #0e2428; border: 1px solid #45696b; padding: 8px;
+}
+.sm-roster-card.active-pet { border-color: #78f3e3; background: #102e33; }
+.sm-expedition-card { display: flex; justify-content: space-between; align-items: center; }
+
+@media (max-width: 760px) {
+  dialog.sprite-modal[open] { width: 98vw; height: 96vh; }
+  .sm-overview-grid { grid-template-columns: 1fr; }
+  .sm-branches-grid { grid-template-columns: 1fr 1fr; }
+}
 .sprite-btn {
   width:100%; padding:6px; margin-top:4px; background:#183a3c; color:#edf5e6;
   border:2px solid #537c73; border-radius:0; cursor:pointer; font-size:11px;

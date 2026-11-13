@@ -3,6 +3,8 @@ import { ART_CONFIG } from '../data/art.js';
 export const GameState = {
   player: null,
   pet: null,
+  sprites: [],
+  activeSpriteId: null,
   currentScene: null,
   
   inventory: [],

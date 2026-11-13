@@ -42,7 +42,7 @@ export class Game {
     Camera.init(baseWidth, baseHeight);
     
     GameState.player = new Player(800, 600);
-    GameState.pet = new Pet(800, 600);
+    SpriteSystem.initSprites();
     GameState.inventory = [];
     GameState.player.equipment.weapon = ITEMS_DB.espada_basica;
     EquipmentSystem.recalcStats();
