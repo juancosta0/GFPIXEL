@@ -5,6 +5,7 @@ export const GameState = {
   pet: null,
   sprites: [],
   activeSpriteId: null,
+  discoveredScenes: ['cidade'],
   currentScene: null,
   
   inventory: [],

@@ -264,6 +264,88 @@ dialog.sprite-modal[open] {
 .rarity-epic { color: #c8a6ff; font-weight: bold; text-shadow: 0 0 3px #7659a8; }
 .rarity-legendary { color:#ffe28a; font-weight:bold; text-shadow:0 0 5px #d98c4e; }
 
+/* ===== WORLD MAP MODAL ===== */
+dialog.world-map-modal:modal {
+  overscroll-behavior: contain;
+}
+dialog.world-map-modal::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(4, 10, 14, 0.82);
+  backdrop-filter: blur(3px);
+}
+dialog.world-map-modal[open] {
+  position: fixed; inset: 0; margin: auto;
+  width: min(920px, 96vw); height: min(640px, 92vh);
+  background: linear-gradient(150deg, #0e272c, #051417);
+  border: 3px solid #78f3e3;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(120,243,227,0.15);
+  color: #edf5e6; padding: 0; z-index: 160;
+  display: flex; flex-direction: column;
+}
+.wm-filter-bar {
+  display: flex; background: #071518; border-bottom: 2px solid #365053; overflow-x: auto;
+}
+.wm-filter-btn {
+  padding: 8px 12px; background: transparent; border: none;
+  border-bottom: 3px solid transparent; color: #9bb1ab; cursor: pointer;
+  font-size: 11px; white-space: nowrap; transition: color .15s, border .15s;
+}
+.wm-filter-btn:hover { color: #fff; background: rgba(255,255,255,0.04); }
+.wm-filter-btn.active {
+  color: #78f3e3; border-bottom-color: #78f3e3; background: rgba(120, 243, 227, 0.08); font-weight: bold;
+}
+.wm-body {
+  flex: 1; padding: 12px; overflow-y: auto; background: radial-gradient(circle at center, #0f2b31 0%, #061518 80%);
+}
+.wm-regions-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px;
+}
+.wm-region-card {
+  background: rgba(10, 28, 31, 0.92); border: 1px solid #45696b;
+  padding: 10px; border-radius: 2px; display: flex; flex-direction: column;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.4); transition: transform .12s, border-color .12s;
+}
+.wm-region-card:hover {
+  transform: translateY(-2px);
+}
+.wm-region-card.current-location {
+  border-color: #f1d17a !important; background: rgba(26, 48, 51, 0.95);
+  box-shadow: 0 0 10px rgba(241, 209, 122, 0.3);
+}
+.wm-region-card.available {
+  border-color: #78f3e3;
+}
+.wm-region-card.locked {
+  opacity: 0.55; filter: grayscale(0.5); background: rgba(12, 17, 22, 0.88);
+}
+.wm-region-title {
+  font-size: 13px; font-weight: bold; color: #f1d17a; display: block;
+}
+.wm-status-badge {
+  font-size: 9px; padding: 2px 6px; border-radius: 2px; font-weight: bold; white-space: nowrap;
+}
+.wm-status-badge.here {
+  background: #f1d17a; color: #10252a;
+}
+.wm-status-badge.discovered {
+  background: #2ecc71; color: #0a1f14;
+}
+.wm-status-badge.available {
+  background: #3498db; color: #fff;
+}
+.wm-status-badge.locked {
+  background: #e74c3c; color: #fff;
+}
+.wm-region-desc {
+  font-size: 11px; color: #c5d8d1; margin: 6px 0; line-height: 1.3;
+}
+.wm-region-details {
+  font-size: 10px; color: #9bb1ab; border-top: 1px solid #284447;
+  padding-top: 6px; margin-top: auto; display: flex; flex-direction: column; gap: 2px;
+}
+.wm-region-details strong { color: #edf5e6; }
+
 @media (max-width: 760px) {
   #topbar { padding:6px 8px; font-size:9px; }
   .status-group { gap:6px; }

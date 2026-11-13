@@ -6,8 +6,21 @@ import { SaveSystem } from './save.js';
 export const REGIONS = Object.freeze({
   cidade: { recommendedLevel: 1, difficulty: 'safe', rewards: [] },
   planiciesSafael: { recommendedLevel: 1, difficulty: 'intro', rewards: ['materials'] },
-  cavernaSombria: { recommendedLevel: 2, difficulty: 'mechanics', rewards: ['equipment'] },
-  arenaReiSlime: { recommendedLevel: 3, difficulty: 'boss', rewards: ['rare equipment'] }
+  cavernaSombria: { recommendedLevel: 2, difficulty: 'mechanics', rewards: ['equipment', 'materials'] },
+  arenaReiSlime: { recommendedLevel: 3, difficulty: 'boss', rewards: ['rare equipment', 'epic trophy'] },
+  camaraSecreta: { recommendedLevel: 3, difficulty: 'secret', rewards: ['rare equipment', 'gold', 'gems'] },
+  desertoDourado: { recommendedLevel: 2, difficulty: 'exploration', rewards: ['desert materials', 'ores'] },
+  portoOasis: { recommendedLevel: 2, difficulty: 'safe', rewards: ['supplies'] },
+  recantoOculto: { recommendedLevel: 2, difficulty: 'secret', rewards: ['rare herbs', 'fruits'] },
+  ruinasSolares: { recommendedLevel: 3, difficulty: 'challenging', rewards: ['ancient relics', 'gold'] },
+  cordilheiraVentos: { recommendedLevel: 2, difficulty: 'exploration', rewards: ['mountain ores', 'feathers'] },
+  picoNevado: { recommendedLevel: 4, difficulty: 'boss', rewards: ['epic equipment', 'frost core'] },
+  grutaCristalina: { recommendedLevel: 3, difficulty: 'challenging', rewards: ['arcane crystals', 'rare ores'] },
+  bosqueRaiz: { recommendedLevel: 2, difficulty: 'exploration', rewards: ['noble wood', 'rare herbs'] },
+  florestaSussurros: { recommendedLevel: 2, difficulty: 'exploration', rewards: ['living wood', 'healing herbs'] },
+  santuarioRaiz: { recommendedLevel: 3, difficulty: 'boss', rewards: ['rare equipment'] },
+  criptaAqua: { recommendedLevel: 3, difficulty: 'dungeon', rewards: ['runic fragments', 'spectral essence'] },
+  tronoAqua: { recommendedLevel: 4, difficulty: 'boss', rewards: ['epic equipment', 'abyssal relic'] }
 });
 
 export class ProgressionSystem {

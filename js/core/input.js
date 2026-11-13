@@ -19,6 +19,7 @@ export class InputManager {
       if (key === ' ') SkillSystem.useSkill(0);
       if (key === 'i') UISystem.toggleWindow('playerWindows');
       if (key === 'k') UISystem.toggleSpriteManager();
+      if (key === 'm') UISystem.toggleWorldMap();
     });
     window.addEventListener('keyup', event => { this.keys[event.key.toLowerCase()] = false; });
     window.addEventListener('blur', () => { this.keys = {}; this.pressedThisFrame = {}; });

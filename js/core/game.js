@@ -20,6 +20,7 @@ import { ART_CONFIG } from '../data/art.js';
 import { AssetManager } from '../systems/assetManager.js';
 import { DebugRenderer } from '../systems/debugRenderer.js';
 import { ArtPreviewSystem } from '../systems/artPreview.js';
+import { GatheringSystem } from '../systems/gathering.js';
 
 export class Game {
   static saveTimer = 0;
@@ -102,6 +103,7 @@ export class Game {
     }
     
     LootSystem.update(dt);
+    GatheringSystem.update(dt);
     ParticleEffectsSystem.update(dt);
     VFXSystem.update(dt);
   }

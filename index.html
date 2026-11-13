@@ -21,7 +21,7 @@
       <span>EXP <div class="bar"><div id="expFill"></div></div></span>
     </div>
     <div class="status-group">
-      <b style="color:#b19cd9; margin-right:10px;" id="mapNameUI">📍 Cidade Principal</b>
+      <b style="color:#b19cd9; margin-right:10px; cursor:pointer;" id="mapNameUI" onclick="GameAPI.toggleWorldMap()" title="Clique para abrir o Mapa-Múndi (M)">📍 Cidade Principal</b>
       <span style="color:#f1c40f">💰 <span id="pGold">0</span> | Atk: <span id="pAtk">10</span></span>
     </div>
   </div>
@@ -94,6 +94,34 @@
       <div id="sm-pane-feeding" class="sm-tab-pane" style="display:none;"></div>
       <div id="sm-pane-work" class="sm-tab-pane" style="display:none;"></div>
       <div id="sm-pane-roster" class="sm-tab-pane" style="display:none;"></div>
+    </div>
+  </dialog>
+
+  <dialog id="worldMapModal" class="world-map-modal" aria-labelledby="wmDialogTitle">
+    <div class="sm-header">
+      <div class="sm-header-info">
+        <h2 id="wmDialogTitle"><span style="color:#78f3e3">🗺️</span> Mapa-Múndi de Safael</h2>
+        <div class="sm-header-badges">
+          <span class="sm-badge" style="border-color:#78f3e3; color:#78f3e3">Regiões Descobertas: <strong id="wmDiscoveredCount">1 / 17</strong></span>
+          <span class="sm-badge" style="border-color:#f1d17a; color:#f1d17a">Biomas Conhecidos: <strong id="wmBiomesCount">1 / 6</strong></span>
+          <span class="sm-badge" style="border-color:#ff8fa3; color:#ff8fa3">Atalho: Tecla [M]</span>
+        </div>
+      </div>
+      <button type="button" class="sm-close-btn" aria-label="Fechar" onclick="GameAPI.toggleWorldMap()">✖</button>
+    </div>
+
+    <div class="wm-filter-bar">
+      <button class="wm-filter-btn active" data-filter="all" onclick="GameAPI.setWorldMapFilter('all')">🌍 Todos os Biomas</button>
+      <button class="wm-filter-btn" data-filter="city" onclick="GameAPI.setWorldMapFilter('city')">🏰 Cidades</button>
+      <button class="wm-filter-btn" data-filter="forest" onclick="GameAPI.setWorldMapFilter('forest')">🌲 Florestas</button>
+      <button class="wm-filter-btn" data-filter="desert" onclick="GameAPI.setWorldMapFilter('desert')">🏜️ Desertos</button>
+      <button class="wm-filter-btn" data-filter="mountain" onclick="GameAPI.setWorldMapFilter('mountain')">⛰️ Montanhas</button>
+      <button class="wm-filter-btn" data-filter="cavern" onclick="GameAPI.setWorldMapFilter('cavern')">🦇 Cavernas</button>
+      <button class="wm-filter-btn" data-filter="secret" onclick="GameAPI.setWorldMapFilter('secret')">✨ Secretas</button>
+    </div>
+
+    <div class="wm-body">
+      <div id="wmRegionsGrid" class="wm-regions-grid"></div>
     </div>
   </dialog>
 

@@ -176,7 +176,9 @@ export const ASSETS_DB = {
   swordIcon: sheet(1, swordIconArt), bowIcon: sheet(1, bowIconArt), staffIcon: sheet(1, staffIconArt), potionIcon: sheet(1, potionIconArt),
   treeProp: sheet(1, treePropArt), crystalProp: sheet(1, crystalPropArt), chestProp: sheet(1, chestPropArt), ruinProp: sheet(1, ruinPropArt), altarProp: sheet(1, altarPropArt), fountainProp: sheet(1, fountainPropArt), torchProp: sheet(1, torchPropArt), bannerProp: sheet(1, bannerPropArt), flowerProp: sheet(1, flowerPropArt), lampProp: sheet(1, lampPropArt),
   tileMeadow: tile('#466d58', ['#598061', '#355849', '#7b8959'], 3), tileForest: tile('#294d47', ['#386a5a', '#1d3937', '#587657'], 7),
-  tileCrypt: tile('#3e3e4a', ['#50515e', '#2c3038', '#60616c'], 11), tileTown: tile('#6a6258', ['#817767', '#514b47', '#978a70'], 17)
+  tileCrypt: tile('#3e3e4a', ['#50515e', '#2c3038', '#60616c'], 11), tileTown: tile('#6a6258', ['#817767', '#514b47', '#978a70'], 17),
+  tileDesert: tile('#b8964e', ['#cca85e', '#a3813a', '#ddbe75'], 19), tileMountain: tile('#4a4d57', ['#5d616c', '#383a42', '#727785'], 23),
+  tileCavern: tile('#252834', ['#353947', '#1a1c24', '#454c5e'], 29), tileOasis: tile('#4a7560', ['#5f8a74', '#39634e', '#b8964e'], 31)
 };
 
 export const SPRITES = Object.freeze({

@@ -14,6 +14,7 @@ import { ShopSystem } from '../systems/shop.js';
 import { AnimationController } from '../systems/animation.js';
 import { CombatSystem } from '../systems/combat.js';
 import { IMAGES } from '../data/assets.js';
+import { GatheringSystem } from '../systems/gathering.js';
 
 export class Player extends Entity {
   constructor(x, y) {
@@ -106,7 +107,10 @@ export class Player extends Entity {
     };
     
     checkList(GameState.currentScene.npcs);
-    checkList((GameState.currentScene.objects || []).filter(object => object.type === 'chest' && !object.opened));
+    checkList((GameState.currentScene.objects || []).filter(object => 
+      (object.type === 'chest' && !object.opened) || 
+      (object.type && object.type.endsWith('_node') && !object.depleted)
+    ));
     this.interactionTarget = closest;
     
     if (this.interactionTarget && InputManager.isJustPressed('e')) {
@@ -116,6 +120,7 @@ export class Player extends Entity {
 
   interact(target) {
     if (target.type === 'chest') return ChestSystem.open(target);
+    if (target.type && target.type.endsWith('_node')) return GatheringSystem.harvest(target);
     const npc = NPCS_DB[target.id] || target;
     if (npc.function === 'shop') return ShopSystem.buy(npc.shop?.[0] || 'pocao_luz');
     const action = DialogueSystem.open(npc, npc.dialogue, 0);

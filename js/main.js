@@ -35,7 +35,10 @@ window.GameAPI = {
   adoptSprite: (spriteId) => {
     const def = DEFAULT_SPRITES.find(s => s.id === spriteId);
     if (def) SpriteSystem.adoptSprite(def);
-  }
+  },
+  toggleWorldMap: () => UISystem.toggleWorldMap(),
+  setWorldMapFilter: (f) => UISystem.setWorldMapFilter(f),
+  fastTravel: (s) => UISystem.fastTravel(s)
 };
 
 window.addEventListener('load', () => {

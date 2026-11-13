@@ -14,5 +14,15 @@ export const QUESTS_DB = {
     id: 'king_slime', name: 'O Rei Slime Sombrio', description: 'Atravesse a caverna e derrote o Rei Slime Sombrio.',
     objective: { type: 'kill', target: 'rei_slime_sombrio', required: 1 },
     reward: { xp: 260, gold: 180, flags: ['king_slime_defeated'] }, requires: 'unlockedDungeon', status: 'locked'
+  },
+  desert_expedition: {
+    id: 'desert_expedition', name: 'Expedição às Dunas Douradas', description: 'Explore o Deserto de Duna Dourada ao sul de Ilya.',
+    objective: { type: 'visit', target: 'desertoDourado', required: 1 },
+    reward: { xp: 120, gold: 90, flags: ['desert_explored'] }, requires: 'slime_problem_done', status: 'locked'
+  },
+  mountain_trial: {
+    id: 'mountain_trial', name: 'O Pico dos Ventos', description: 'Alcance a Cordilheira dos Ventos a oeste de Ilya.',
+    objective: { type: 'visit', target: 'cordilheiraVentos', required: 1 },
+    reward: { xp: 180, gold: 120, flags: ['mountain_explored'] }, requires: 'king_slime_defeated', status: 'locked'
   }
 };

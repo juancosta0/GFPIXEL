@@ -3,10 +3,13 @@ import { GameState } from '../core/gameState.js';
 import { SPRITE_CATEGORIES, SPRITE_PERSONALITIES, SPRITE_SKILL_TREE, SPRITE_FOODS, DEFAULT_SPRITES } from '../data/spriteData.js';
 import { SpriteSystem } from '../systems/sprite.js';
 import { CraftingSystem } from '../systems/crafting.js';
+import { BIOMES, WORLD_REGIONS } from '../data/worldMapData.js';
+import { SceneManager } from '../core/sceneManager.js';
 
 export class UISystem {
   static currentSpriteTab = 'overview';
   static selectedSpriteForWork = null;
+  static currentMapFilter = 'all';
 
   static init() {
     const grid = document.getElementById('invGrid');
@@ -82,7 +85,13 @@ export class UISystem {
       hint.classList.toggle('visible', Boolean(target));
       if (target) {
         const span = hint.querySelector('span');
-        if (span) span.textContent = target.text?.replace('E - ', '') || (target.type === 'chest' ? 'Abrir baú' : `Interagir com ${target.name}`);
+        if (span) {
+          if (target.type === 'chest') span.textContent = 'Abrir baú';
+          else if (target.type === 'ore_node') span.textContent = 'Minerar veio de minério';
+          else if (target.type === 'wood_node') span.textContent = 'Extrair madeira';
+          else if (target.type === 'herb_node') span.textContent = 'Colher ervas místicas';
+          else span.textContent = target.text?.replace('E - ', '') || `Interagir com ${target.name}`;
+        }
       }
     }
   }
@@ -179,6 +188,136 @@ export class UISystem {
       }
       this.updateSpriteManagerModal();
     }
+  }
+
+  static toggleWorldMap() {
+    const dialog = document.getElementById('worldMapModal');
+    if (!dialog) return;
+
+    if (dialog.open) {
+      dialog.close();
+    } else {
+      dialog.showModal();
+      this.updateWorldMapModal();
+    }
+  }
+
+  static setWorldMapFilter(filter) {
+    this.currentMapFilter = filter;
+    document.querySelectorAll('.wm-filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === filter);
+    });
+    this.updateWorldMapModal();
+  }
+
+  static fastTravel(sceneId) {
+    const currentScene = GameState.currentScene;
+    if (currentScene && currentScene.combatAllowed) {
+      this.logMsg('Você só pode iniciar Viagem Rápida a partir de uma Cidade ou área pacífica!', 'dmg');
+      return;
+    }
+    const region = WORLD_REGIONS[sceneId];
+    if (!region) return;
+    const discovered = (GameState.discoveredScenes || []).includes(sceneId);
+    if (!discovered) {
+      this.logMsg('Região ainda não descoberta!', 'dmg');
+      return;
+    }
+
+    this.toggleWorldMap();
+    SceneManager.loadScene(sceneId, 800, 600);
+    this.logMsg(`✨ Viajou rapidamente para ${region.name}!`, 'gold');
+  }
+
+  static updateWorldMapModal() {
+    const dialog = document.getElementById('worldMapModal');
+    if (!dialog || !dialog.open) return;
+
+    const discoveredList = GameState.discoveredScenes || ['cidade'];
+    const currentSceneId = GameState.currentScene?.id || 'cidade';
+    const totalRegions = Object.keys(WORLD_REGIONS).length;
+    const discoveredCount = discoveredList.length;
+
+    const countEl = document.getElementById('wmDiscoveredCount');
+    if (countEl) countEl.textContent = `${discoveredCount} / ${totalRegions}`;
+    
+    const discoveredBiomes = new Set();
+    discoveredList.forEach(id => {
+      const r = WORLD_REGIONS[id];
+      if (r) discoveredBiomes.add(r.biome);
+    });
+    const biomesEl = document.getElementById('wmBiomesCount');
+    if (biomesEl) biomesEl.textContent = `${discoveredBiomes.size} / ${Object.keys(BIOMES).length}`;
+
+    const container = document.getElementById('wmRegionsGrid');
+    if (!container) return;
+
+    let html = '';
+    for (const [id, region] of Object.entries(WORLD_REGIONS)) {
+      if (this.currentMapFilter && this.currentMapFilter !== 'all' && region.biome !== this.currentMapFilter) {
+        continue;
+      }
+
+      const isCurrent = id === currentSceneId;
+      const isDiscovered = discoveredList.includes(id);
+      let isUnlocked = true;
+      if (region.unlockReq && !GameState.flags?.[region.unlockReq]) {
+        isUnlocked = false;
+      }
+
+      const biomeData = BIOMES[region.biome] || BIOMES.city;
+      let statusBadge = '';
+      let cardClass = '';
+
+      if (isCurrent) {
+        cardClass = 'current-location';
+        statusBadge = '<span class="wm-status-badge here">📍 Você está aqui</span>';
+      } else if (isDiscovered) {
+        cardClass = 'discovered';
+        statusBadge = '<span class="wm-status-badge discovered">✓ Descoberta</span>';
+      } else if (isUnlocked) {
+        cardClass = 'available';
+        statusBadge = '<span class="wm-status-badge available">✨ Disponível para Exploração</span>';
+      } else {
+        cardClass = 'locked';
+        statusBadge = '<span class="wm-status-badge locked">🔒 Bloqueada</span>';
+      }
+
+      const canFastTravel = isDiscovered && !GameState.currentScene?.combatAllowed && region.biome === 'city';
+
+      html += `
+        <div class="wm-region-card ${cardClass}" style="border-left: 4px solid ${region.color};">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <span class="wm-region-title">${region.icon} ${isDiscovered || isUnlocked ? region.name : 'Região Inexplorada'}</span>
+              <div style="font-size:10px; color:#c5d8d1; margin-top:2px;">
+                <span style="color:${biomeData.color}">${biomeData.icon} ${region.biomeName}</span> · <span style="color:#f1c40f">Nível Recomendado: Lv. ${region.recLevel}</span>
+              </div>
+            </div>
+            ${statusBadge}
+          </div>
+
+          <p class="wm-region-desc">
+            ${isDiscovered ? region.desc : isUnlocked ? 'Esta região está conectada a Safael e pronta para ser explorada.' : `Bloqueada. Requisito: ${region.unlockDesc || 'Progresso em missões'}.`}
+          </p>
+
+          ${(isDiscovered || isUnlocked) ? `
+            <div class="wm-region-details">
+              <div><strong>Pontos Notáveis:</strong> ${region.features.join(' · ')}</div>
+              <div><strong>Criaturas Nativas:</strong> ${region.monsters.join(' · ')}</div>
+              <div><strong>Recursos Abundantes:</strong> ${region.resources.join(' · ')}</div>
+            </div>
+          ` : ''}
+
+          <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+            ${!isUnlocked ? `<span style="font-size:10px; color:#ff8080">🔒 ${region.unlockDesc}</span>` : '<span></span>'}
+            ${canFastTravel && !isCurrent ? `<button class="sprite-btn" style="width:auto; padding:3px 10px;" onclick="GameAPI.fastTravel('${id}')">Teleportar (Viagem Rápida)</button>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = html;
   }
 
   static switchSpriteTab(tabName) {

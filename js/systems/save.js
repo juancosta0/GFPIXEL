@@ -12,6 +12,7 @@ export class SaveSystem {
     GameState.quests = [];
     GameState.flags = {};
     GameState.progress = {};
+    GameState.discoveredScenes = ['cidade'];
     GameState.sprites = [];
     SpriteSystem.initSprites();
   }
@@ -38,6 +39,7 @@ export class SaveSystem {
       pet: petData,
       sprites: spritesData,
       activeSpriteId: GameState.activeSpriteId || GameState.pet?.id,
+      discoveredScenes: GameState.discoveredScenes || ['cidade'],
       quests: GameState.quests,
       flags: GameState.flags,
       progress: GameState.progress,
@@ -62,6 +64,7 @@ export class SaveSystem {
       GameState.quests = data.quests || [];
       GameState.flags = data.flags || {};
       GameState.progress = data.progress || {};
+      GameState.discoveredScenes = Array.isArray(data.discoveredScenes) ? data.discoveredScenes : ['cidade'];
 
       // Carregar Sprites com compatibilidade retroativa
       if (Array.isArray(data.sprites) && data.sprites.length > 0) {
