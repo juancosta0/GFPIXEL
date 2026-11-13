@@ -32,6 +32,8 @@
     <h3>Mesa do Sprite</h3>
     <div class="sprite-status"><strong id="spriteName">Lumi</strong> <span id="spriteLevel">Lv. 1</span></div>
     <div>XP <span id="spriteXp">0/40</span> · Energia <span id="spriteEnergy">100%</span></div>
+    <div>Humor: <span id="spriteMood" style="color:#78f3e3">😊 Feliz</span> · Saciedade: <span id="spriteSatiety">80%</span></div>
+    <div>Vínculo: <span id="spriteFriendship" style="color:#ff8fa3">Amizade: Amigável (25/100)</span></div>
     <div>Tarefa: <span id="spriteTask">Seguindo</span></div>
     <div>Tempo: <span id="spriteTime">-</span></div>
     <div>Recompensa: <span id="spriteReward">-</span></div>
@@ -39,6 +41,13 @@
     <div class="material-counter"><span>🪵 Madeira:</span> <strong id="mWood" style="color:#d35400">0</strong></div>
     <div class="material-counter"><span>🌿 Ervas:</span> <strong id="mHerbs" style="color:#2ecc71">0</strong></div>
     
+    <div class="sprite-quick-actions">
+      <button class="sprite-mini-btn" title="Acariciar Sprite (Carinho)" onclick="GameAPI.petSprite()">🥰</button>
+      <button class="sprite-mini-btn" title="Alimentar com Fruta Silvestre" onclick="GameAPI.feedSprite('fruta_doce')">🍎</button>
+      <button class="sprite-mini-btn" title="Descansar na Cabana / Seguir" onclick="GameAPI.toggleRestSprite()">💤</button>
+    </div>
+
+    <button class="sprite-btn primary-highlight" onclick="GameAPI.toggleSpriteManager()">✨ Cabana dos Sprites (K)</button>
     <button class="sprite-btn" id="btnGatherMin" onclick="GameAPI.spriteGather('minerals', 120, 'Minérios')">⛏️ Coletar Minério</button>
     <button class="sprite-btn" id="btnGatherWood" onclick="GameAPI.spriteGather('wood', 240, 'Madeira')">🪵 Coletar Madeira</button>
     <button class="sprite-btn" id="btnGatherHerb" onclick="GameAPI.spriteGather('herbs', 360, 'Ervas')">🌿 Coletar Ervas</button>
@@ -61,6 +70,32 @@
       <div id="invGrid"></div>
     </div>
   </div>
+
+  <dialog id="spriteManagerModal" class="sprite-modal" aria-labelledby="smDialogTitle">
+    <div class="sm-header">
+      <div class="sm-header-info">
+        <h2 id="smDialogTitle"><span style="color:#f1d17a">✨</span> Cabana dos Sprites <span id="smHeaderName" style="color:#78f3e3; font-size:15px; margin-left:8px;"></span></h2>
+        <div id="smHeaderBadges" class="sm-header-badges"></div>
+      </div>
+      <button type="button" class="sm-close-btn" aria-label="Fechar" onclick="GameAPI.toggleSpriteManager()">✖</button>
+    </div>
+
+    <div class="sm-tabs" role="tablist">
+      <button class="sm-tab-btn active" data-tab="overview" onclick="GameAPI.switchSpriteTab('overview')">📋 Visão Geral</button>
+      <button class="sm-tab-btn" data-tab="skills" onclick="GameAPI.switchSpriteTab('skills')">🌟 Especializações</button>
+      <button class="sm-tab-btn" data-tab="feeding" onclick="GameAPI.switchSpriteTab('feeding')">🍎 Alimentação & Cuidado</button>
+      <button class="sm-tab-btn" data-tab="work" onclick="GameAPI.switchSpriteTab('work')">⛏️ Tarefas & Forja</button>
+      <button class="sm-tab-btn" data-tab="roster" onclick="GameAPI.switchSpriteTab('roster')">👥 Meus Sprites & Altar</button>
+    </div>
+
+    <div class="sm-body">
+      <div id="sm-pane-overview" class="sm-tab-pane" style="display:block;"></div>
+      <div id="sm-pane-skills" class="sm-tab-pane" style="display:none;"></div>
+      <div id="sm-pane-feeding" class="sm-tab-pane" style="display:none;"></div>
+      <div id="sm-pane-work" class="sm-tab-pane" style="display:none;"></div>
+      <div id="sm-pane-roster" class="sm-tab-pane" style="display:none;"></div>
+    </div>
+  </dialog>
 
   <div id="hotbar">
     <div class="slot" data-skill="0"><span class="key">1 / Espaço</span><span class="icon">⚔️</span>Ataque</div>

@@ -9,10 +9,19 @@ import { ParticleEffectsSystem } from './particleEffects.js';
 export class LootSystem {
   static roll(enemy) {
     const table = enemy.base.lootTable;
-    if (!table) return enemy.base.drop && Math.random() <= 0.6 ? [enemy.base.drop] : [];
+    const pet = GameState.pet;
+    const explorerBonuses = pet?.getExplorerBonuses ? pet.getExplorerBonuses() : null;
+    const rareBonus = explorerBonuses?.lootRareBonus || 0;
+
+    if (!table) {
+      const baseChance = 0.6 + rareBonus;
+      return enemy.base.drop && Math.random() <= baseChance ? [enemy.base.drop] : [];
+    }
     const drops = [...(table.guaranteed || [])];
     for (const entry of [...(table.common || []), ...(table.rare || [])]) {
-      if (Math.random() <= (entry.chance || 0)) {
+      const isRare = (table.rare || []).includes(entry);
+      const effectiveChance = (entry.chance || 0) + (isRare ? rareBonus : 0);
+      if (Math.random() <= effectiveChance) {
         const minimum = entry.min || 1;
         const maximum = entry.max || minimum;
         drops.push({ ...entry.item, quantity: minimum + Math.floor(Math.random() * (maximum - minimum + 1)) });
